@@ -205,14 +205,14 @@ main{position:relative;z-index:2;overflow-x:clip}
 .lockup p span{display:block}
 .lockup p span:nth-child(2){color:var(--cream-2)}
 .lockup p span:nth-child(3){color:var(--coral-2)}
-.strip{position:relative;border-top:1px solid rgba(243,236,226,.16);will-change:transform}
+.strip{position:relative;z-index:1;opacity:1!important;border:1px solid rgba(243,236,226,.14);border-bottom:0;border-radius:18px 18px 0 0;background:linear-gradient(180deg,rgba(9,14,32,.78),rgba(9,14,32,.86));-webkit-backdrop-filter:blur(16px) saturate(140%);backdrop-filter:blur(16px) saturate(140%);will-change:transform}
 .strip-bar{position:absolute;left:0;top:-1px;height:2px;width:20%;transition:transform .8s var(--ease),width .8s var(--ease)}
 .strip-bar i{display:block;height:100%;background:var(--coral);box-shadow:0 0 10px var(--coral-glow);transform-origin:left;transform:scaleX(0)}
 .strip-bar i.run{animation:fill 3.6s linear forwards}
 @keyframes fill{to{transform:scaleX(1)}}
-.strip ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));overflow-x:auto;scrollbar-width:none}
+.strip ul{list-style:none;margin:0;padding:0 18px;display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));overflow-x:auto;scrollbar-width:none}
 .strip ul::-webkit-scrollbar{display:none}
-.strip li{display:flex;flex-direction:column;gap:10px;padding:20px 18px 24px 0;font-size:.84rem;line-height:1.35;color:var(--cream-2);transition:color .6s}
+.strip li{display:flex;flex-direction:column;gap:10px;padding:20px 18px 24px 0;font-size:.86rem;font-weight:500;line-height:1.35;color:var(--cream);text-shadow:0 1px 10px rgba(5,9,22,.6);transition:color .6s}
 .strip li.on{color:var(--coral-2)}
 @media(min-width:1000px){
   .hero-grid{grid-template-columns:minmax(0,1.6fr) minmax(330px,1fr);align-content:stretch;align-items:end}
@@ -926,7 +926,7 @@ main{position:relative;z-index:2;overflow-x:clip}
     </div>
   </div>
 
-  <div class="wrap strip" id="strip" data-intro>
+  <div class="wrap strip" id="strip">
     <span class="strip-bar" id="stripBar"><i></i></span>
     <ul id="stripList">
       <li><svg class="ico"><use href="#i-layers"/></svg><span>Operations that run<br>without you in the room</span></li>
@@ -1719,8 +1719,7 @@ main{position:relative;z-index:2;overflow-x:clip}
       .from('.hero .ctas > *', { opacity: 0, y: 18, stagger: .08, duration: .9 }, '-=.8')
       .from('#widget', { opacity: 0, y: 50, scale: .96, duration: 1.6 }, .45)
       .from('#lockup', { opacity: 0, y: 40, duration: 1.4 }, .75)
-      .from('#lockup p span', { opacity: 0, x: -14, stagger: .12, duration: 1 }, 1)
-      .from('#strip', { opacity: 0, y: 24, duration: 1.2 }, 1.05);
+      .from('#lockup p span', { opacity: 0, x: -14, stagger: .12, duration: 1 }, 1);
   }
   root.classList.remove('pre');
 
@@ -1981,7 +1980,7 @@ main{position:relative;z-index:2;overflow-x:clip}
     gsap.to('#heroCopy', { y: -90, ease: 'none', scrollTrigger: ht });
     gsap.to('#widget', { y: -190, ease: 'none', scrollTrigger: ht });
     gsap.to('#lockup', { y: -120, ease: 'none', scrollTrigger: ht });
-    gsap.to('#strip', { y: 40, opacity: .2, ease: 'none', scrollTrigger: ht });
+    gsap.to('#strip', { y: 40, ease: 'none', scrollTrigger: ht });
 
     // problem: pinned stage, cards tilt in from alternating sides, illos scrubbed
     const cardsEls = $$('.scard'), dims = cardsEls.map(c => $('.dim', c));
