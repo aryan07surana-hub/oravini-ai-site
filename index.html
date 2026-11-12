@@ -623,6 +623,43 @@ main{position:relative;z-index:2;overflow-x:clip}
 @media(min-width:960px){.also-card{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) auto;gap:36px}}
 
 /* =====================================================================
+   round 5: streams scene, promise stamps, tighter offer/process spacing
+   ===================================================================== */
+.st-scene{position:relative;display:grid;gap:clamp(44px,7vh,76px);padding:clamp(18px,2.4vw,30px)}
+.st-scene .scene-head{position:relative;z-index:1;margin:0}
+.st-canvas{position:absolute;left:0;top:0;pointer-events:none;z-index:0}
+.st-chans{position:relative;z-index:1;display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.st-core{position:relative;z-index:1;justify-self:center;display:flex;align-items:center;gap:18px;width:min(100%,460px);padding:16px 24px 22px;border-radius:24px;transition:box-shadow .8s,border-color .8s}
+.st-core .orbit{width:64px;height:64px;margin:0;flex:none}
+.st-core .core-title{margin:2px 0 0;font-size:1.25rem}
+.st-core.on{border-color:rgba(255,144,113,.6);box-shadow:0 0 0 1px rgba(255,111,85,.3),0 30px 90px -20px rgba(255,111,85,.6),inset 0 1px 0 rgba(255,255,255,.18)}
+.st-core.on .orbit b{transform:scale(1);box-shadow:0 0 40px 10px rgba(255,111,85,.5)}
+.st-bar{position:absolute;left:24px;right:24px;bottom:10px;height:2px;border-radius:2px;background:rgba(255,255,255,.1);overflow:hidden}
+.st-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--coral),var(--coral-2));transform-origin:left;transform:scaleX(0)}
+.st-out{position:relative;z-index:1;list-style:none;margin:0;padding:0;display:grid;gap:10px;grid-template-columns:1fr}
+@media(min-width:560px) and (max-width:899px){.st-out{grid-template-columns:1fr 1fr}}
+@media(min-width:900px){.st-out{grid-template-columns:repeat(5,1fr)}}
+.st-out li{display:grid;gap:8px;align-content:start;padding:14px 16px;border-radius:18px;background:rgba(10,16,36,.5);border:1px solid rgba(255,255,255,.1);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);font-size:.92rem;line-height:1.35;transition:border-color .5s,box-shadow .5s}
+.st-out li .ico{width:20px;height:20px;color:var(--coral-2)}
+.st-out li small{display:flex;align-items:center;gap:6px;font-size:.62rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--cream-3);transition:color .4s}
+.st-out li small::before{content:'';width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.25);transition:background-color .4s,box-shadow .4s}
+.st-out li.on{border-color:rgba(255,144,113,.6);box-shadow:0 0 0 1px rgba(255,111,85,.2),0 20px 50px -20px rgba(255,111,85,.55)}
+.st-out li.on small{color:var(--coral-2)}
+.st-out li.on small::before{background:var(--coral);box-shadow:0 0 8px var(--coral)}
+#s0Done .ico{width:13px;height:13px}
+.promise{display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:7px 13px 7px 8px;border-radius:999px;font-size:.78rem;font-weight:500;line-height:1.2;color:var(--cream);background:rgba(255,111,85,.12);border:1px solid rgba(255,144,113,.42);opacity:0;transform:scale(.92);transform-origin:left center;transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.promise svg{width:18px;height:18px;flex:none;padding:3px;border-radius:50%;background:linear-gradient(180deg,#ff8466,#f2604b);fill:none;stroke:#fff4ee;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.promise svg path{stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset .6s var(--ease) .25s}
+.promise.in{opacity:1;transform:none}
+.promise.in svg path{stroke-dashoffset:0}
+.s-intro .promise{justify-self:start;margin-top:0}
+/* tighter approach to the offer and process sections (order unchanged) */
+.why{padding-bottom:clamp(48px,7vh,90px)}
+#offer{padding-top:clamp(48px,7vh,90px);padding-bottom:clamp(48px,7vh,90px)}
+.hs-pin{padding-top:clamp(48px,7vh,90px)}
+.hs-on .hs-pin{justify-content:flex-start;padding-top:clamp(92px,12vh,118px)}
+
+/* =====================================================================
    v3: realistic problem scenes, payment toasts, sound toggle
    ===================================================================== */
 .illo-call{height:clamp(250px,34vh,300px);display:flex;align-items:center;justify-content:center;gap:clamp(14px,3vw,34px);padding:12px}
@@ -777,6 +814,7 @@ main{position:relative;z-index:2;overflow-x:clip}
   .st-ai,.st-ai *,.cl b:last-child,.th-msg,.th-lost,.th-status .s3,.clist .ok,.ph-chip{opacity:1!important;transform:none!important}
   .th-status .s1,.th-status .s2,.clist .pd,.cl:not(:last-child) b{opacity:0!important}
   .phone{transform:none!important}
+  .promise{opacity:1!important;transform:none!important}.promise svg path{stroke-dashoffset:0!important}
 }
 </style>
 </head>
@@ -900,6 +938,26 @@ main{position:relative;z-index:2;overflow-x:clip}
   </div>
 </section>
 
+<!-- =================== THE PROMISE, RUNNING (streams scene) =================== -->
+<section class="section stream-sec" aria-labelledby="streamTitle">
+  <div class="wrap">
+    <div class="head-split">
+      <div class="sec-head">
+        <p class="label sec-label fade">The promise, running</p>
+        <h2 class="display d-l" id="streamTitle" data-split="words">In every business, you will run an AI. <br><span class="accent">Yours can start first.</span></h2>
+      </div>
+      <p class="lede fade">Every channel your clients use flows into one system. <strong>Every call answered, day and night. Every enquiry followed through.</strong> Meetings booked, reminders sent, and every result reported back to you.</p>
+    </div>
+    <div class="glass scene st-scene" id="s0" style="margin-top:clamp(36px,6vh,60px)">
+      <canvas class="st-canvas" id="s0Canvas" aria-hidden="true"></canvas>
+      <div class="scene-head"><p class="label s-live"><span class="live"></span>Live system · plays on its own</p><span class="step-tag" id="s0Done"><svg class="ico"><use href="#i-check"/></svg>All handled</span></div>
+      <div class="st-chans" id="s0Chans"><span class="glass f-node"><svg class="ico"><use href="#i-phone"/></svg>Calls</span><span class="glass f-node"><svg class="ico"><use href="#i-chat"/></svg>Web chat</span><span class="glass f-node"><svg class="ico"><use href="#i-insta"/></svg>Instagram</span><span class="glass f-node"><svg class="ico"><use href="#i-sms"/></svg>SMS</span><span class="glass f-node"><svg class="ico"><use href="#i-ads"/></svg>Ads</span></div>
+      <div class="glass st-core" id="s0Core"><div class="orbit"><span></span><span></span><span></span><b></b></div><div><p class="label">Oravini AI</p><p class="core-title">Your AI system</p></div><span class="st-bar"><i id="s0Bar"></i></span></div>
+      <ol class="st-out" id="s0Out"><li><svg class="ico"><use href="#i-phone"/></svg><b style="font-weight:400">Every call answered, day or night</b><small>Handled</small></li><li><svg class="ico"><use href="#i-bolt"/></svg><b style="font-weight:400">Every enquiry followed up</b><small>Handled</small></li><li><svg class="ico"><use href="#i-cal"/></svg><b style="font-weight:400">Meeting booked</b><small>Handled</small></li><li><svg class="ico"><use href="#i-bell"/></svg><b style="font-weight:400">Reminder sent</b><small>Handled</small></li><li><svg class="ico"><use href="#i-chart"/></svg><b style="font-weight:400">Results reported to you</b><small>Handled</small></li></ol>
+    </div>
+  </div>
+</section>
+
 <!-- =================== 01 PROBLEM =================== -->
 <section class="section" id="problem" data-sec>
   <div class="wrap">
@@ -915,19 +973,19 @@ main{position:relative;z-index:2;overflow-x:clip}
       <article class="glass scard">
         <span class="dim"></span>
         <div><p class="label">Leak · Calls</p><h3>Calls ring out.</h3><p>The client you wanted dials the next name on the list.</p>
-          <p class="fix"><b>The fix</b>An AI receptionist that answers every call, qualifies it and books it.</p></div>
+          <p class="fix"><b>The fix</b>An AI receptionist that answers every call, qualifies it and books it.</p><span class="promise in-stack"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Every call answered, day or night</span></div>
         <div class="illo illo-call" aria-hidden="true"><div class="phone"><span class="notch"></span><div class="ph-screen"><div class="ph-state st-ring"><p class="ph-label">Incoming call</p><span class="ph-av">NE</span><b class="ph-name">New enquiry</b><small>Mobile</small><div class="ph-btns"><i></i><i class="yes"></i></div></div><div class="ph-state st-missed"><span class="ph-badge">Missed call</span><b class="ph-name">New enquiry</b><small>No voicemail left</small></div><div class="ph-state st-ai"><p class="ph-label">AI receptionist</p><div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><p class="ph-bub b1">Thanks for calling. How can I help?</p><p class="ph-bub me b2">I would like a consultation.</p><span class="ph-chip">Booked · Thursday</span></div></div></div><div class="call-log"><p class="label">Call log</p><span class="cl"><b></b>Ringing</span><span class="cl"><b></b>Missed</span><span class="cl"><b></b>AI receptionist answers</span><span class="cl"><b></b>Qualified and booked</span></div></div>
       </article>
       <article class="glass scard">
         <span class="dim"></span>
         <div><p class="label">Leak · Response</p><h3>Enquiries wait.</h3><p>Hours pass on a reply that should take seconds.</p>
-          <p class="fix"><b>The fix</b>Speed-to-lead replies the moment someone reaches out.</p></div>
+          <p class="fix"><b>The fix</b>Speed-to-lead replies the moment someone reaches out.</p><span class="promise in-stack"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Every enquiry followed through</span></div>
         <div class="illo illo-wait" aria-hidden="true"><div class="thread"><div class="th-head"><span class="ph-av sm">RK</span><div><b>Website enquiry</b><small class="th-status"><span class="s1">Unread</span><span class="s2">Seen · no reply yet</span><span class="s3">Gone cold</span></small></div></div><p class="th-msg m1">Hi, are you taking on new clients next month?</p><p class="th-msg m2">Just following up on my message.</p><p class="th-msg m3">No worries, we have gone with someone else.</p><span class="th-lost">Enquiry lost</span></div><span class="clock"><i class="hour"></i><i class="hand"></i></span></div>
       </article>
       <article class="glass scard">
         <span class="dim"></span>
         <div><p class="label">Leak · Attention</p><h3>Your best people do admin.</h3><p>Talent you pay for spends its day on work a machine does better.</p>
-          <p class="fix"><b>The fix</b>An AI back office that takes the busywork off their desks.</p></div>
+          <p class="fix"><b>The fix</b>An AI back office that takes the busywork off their desks.</p><span class="promise in-stack"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Operations that run without you in the room</span></div>
         <div class="illo illo-chips" aria-hidden="true"><span class="tag">Manual work</span>
           <div class="belt" id="belt"><span style="--k:0">Copy</span><span style="--k:1">Paste</span><span style="--k:2">Chase</span><span style="--k:3">Update</span><span style="--k:4">Re-type</span><span style="--k:5">Reply</span><span style="--k:6">Remind</span><span style="--k:7">Schedule</span><span style="--k:8">Report</span><span style="--k:9">Follow up</span><span style="--k:10">Log it</span><span style="--k:11">Check</span><span style="--k:12">Repeat</span></div>
         </div>
@@ -975,6 +1033,7 @@ main{position:relative;z-index:2;overflow-x:clip}
               <li><b>Conversations</b>Calls go to voicemail</li>
               <li><b>Clients</b>Follow-up stops after one try</li>
             </ul>
+            <span class="promise"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>A brand marketed at its true level</span>
           </div>
         </div>
       </div>
@@ -1140,6 +1199,7 @@ main{position:relative;z-index:2;overflow-x:clip}
       <div class="s-intro">
         <p class="label sec-label fade">Explainer · Own the software</p>
         <h3 class="display d-m" data-split="words">Your platform, <span class="accent">assembled around you.</span></h3>
+        <span class="promise"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Software you own outright</span>
       </div>
       <div class="glass scene" id="s4">
         <div class="scene-head"><p class="label s-live"><span class="live"></span>Built to your operation · plays on its own</p><span class="step-tag"><svg class="ico"><use href="#i-temple"/></svg>Step 3 · Own the software</span></div>
@@ -1503,42 +1563,117 @@ main{position:relative;z-index:2;overflow-x:clip}
      SHARED SOUND: synthesised cha-ching, unlocked by the first gesture
      ================================================================ */
   const Sound = (() => {
-    let ctx = null, muted = false;
+    let ctx = null, master = null, muted = false;
     try { muted = localStorage.getItem('oravini-sound') === 'off'; } catch (e) {}
     const btn = $('#soundBtn');
     const render = () => { btn.classList.toggle('off', muted); btn.setAttribute('aria-pressed', String(!muted)); $('span', btn).textContent = muted ? 'Sound off' : 'Sound on'; };
-    const unlock = () => {
-      try { ctx = ctx || new (window.AudioContext || window.webkitAudioContext)(); if (ctx.state === 'suspended') ctx.resume(); } catch (e) {}
-    };
-    ['pointerdown', 'keydown', 'touchstart'].forEach(ev => addEventListener(ev, unlock, { passive: true }));
-    btn.addEventListener('click', () => { unlock(); muted = !muted; try { localStorage.setItem('oravini-sound', muted ? 'off' : 'on'); } catch (e) {} render(); if (!muted) chaChing(); });
-    render();
-    let last = 0;
-    function chaChing() {
-      if (muted || !ctx || ctx.state !== 'running' || d.hidden) return;
-      const now = performance.now(); if (now - last < 600) return; last = now;
-      const t0 = ctx.currentTime + .01, out = ctx.createGain();
-      out.gain.value = .13; out.connect(ctx.destination);
-      // drawer click
-      const len = Math.floor(ctx.sampleRate * .05), buf = ctx.createBuffer(1, len, ctx.sampleRate), ch = buf.getChannelData(0);
-      for (let i = 0; i < len; i++) ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
-      const ns = ctx.createBufferSource(), hp = ctx.createBiquadFilter(), ng = ctx.createGain();
-      ns.buffer = buf; hp.type = 'highpass'; hp.frequency.value = 2200; ng.gain.value = .6;
-      ns.connect(hp); hp.connect(ng); ng.connect(out); ns.start(t0);
-      // two bright bell strikes
-      [[1568, .05, .45], [2093, .15, .5], [3136, .15, .18], [2637, .16, .12]].forEach(([f, at, v]) => {
-        const o = ctx.createOscillator(), g = ctx.createGain();
-        o.type = 'sine'; o.frequency.value = f;
-        g.gain.setValueAtTime(0, t0 + at); g.gain.linearRampToValueAtTime(v, t0 + at + .006); g.gain.exponentialRampToValueAtTime(.0008, t0 + at + .85);
-        o.connect(g); g.connect(out); o.start(t0 + at); o.stop(t0 + at + .9);
-      });
+    // create AND resume synchronously inside the gesture (iOS needs both in the same handler)
+    function ensure() {
+      try {
+        if (!ctx) {
+          const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+          ctx = new AC();
+          const comp = ctx.createDynamicsCompressor();
+          comp.threshold.value = -12; comp.knee.value = 10; comp.ratio.value = 4; comp.attack.value = .002; comp.release.value = .25;
+          master = ctx.createGain(); master.gain.value = .55;
+          master.connect(comp); comp.connect(ctx.destination);
+        }
+        if (ctx.state !== 'running') ctx.resume();
+        const b = ctx.createBuffer(1, 1, 22050), src = ctx.createBufferSource(); // silent one-sample kick to open the output on iOS
+        src.buffer = b; src.connect(ctx.destination); src.start(0);
+      } catch (e) {}
     }
-    return { chaChing };
+    ['pointerdown', 'touchend', 'click', 'keydown'].forEach(ev => addEventListener(ev, ensure, { passive: true, capture: true }));
+    btn.addEventListener('click', () => {
+      ensure(); muted = !muted;
+      try { localStorage.setItem('oravini-sound', muted ? 'off' : 'on'); } catch (e) {}
+      render();
+      if (!muted && ctx) Promise.resolve(ctx.resume()).then(() => chaChing(true));
+    });
+    render();
+    const ready = () => !muted && ctx && ctx.state === 'running' && !d.hidden;
+    const noise = (sec, curve) => {
+      const len = Math.max(1, Math.floor(ctx.sampleRate * sec)), buf = ctx.createBuffer(1, len, ctx.sampleRate), ch = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, curve);
+      const n = ctx.createBufferSource(); n.buffer = buf; return n;
+    };
+    const tone = (out, t0, f, at, v, dur, type) => {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = type || 'sine'; o.frequency.value = f;
+      g.gain.setValueAtTime(0, t0 + at); g.gain.linearRampToValueAtTime(v, t0 + at + .005); g.gain.exponentialRampToValueAtTime(.0005, t0 + at + dur);
+      o.connect(g); g.connect(out); o.start(t0 + at); o.stop(t0 + at + dur + .05);
+    };
+    let lastCash = 0, lastTick = 0;
+    function chaChing(force) {
+      if (!ready()) return;
+      const now = performance.now(); if (!force && now - lastCash < 600) return; lastCash = now;
+      const t0 = ctx.currentTime + .01, out = ctx.createGain(); out.gain.value = 1; out.connect(master);
+      // drawer: a bright click and a low wooden thunk
+      const n = noise(.05, 3), hp = ctx.createBiquadFilter(), ng = ctx.createGain();
+      hp.type = 'highpass'; hp.frequency.value = 2400; ng.gain.value = .7;
+      n.connect(hp); hp.connect(ng); ng.connect(out); n.start(t0);
+      tone(out, t0, 170, 0, .35, .12, 'triangle');
+      // first coin strike
+      [[1568, .3, 1.1], [2352, .18, .9], [3136, .14, .7], [4704, .06, .45]].forEach(([f, v, dur]) => tone(out, t0, f, .06, v, dur));
+      // second, brighter strike with a beating pair for shimmer
+      [[2093, .34, 1.7], [2097.5, .2, 1.9], [3140, .18, 1.4], [4186, .12, 1.2], [5274, .07, 1]].forEach(([f, v, dur]) => tone(out, t0, f, .19, v, dur));
+      // long sparkle tail
+      [[6272, .04, 1.9, .26], [7040, .03, 2.1, .31], [8372, .02, 1.8, .36]].forEach(([f, v, dur, at]) => tone(out, t0, f, at, v, dur));
+    }
+    function tick() {
+      if (!ready()) return;
+      const now = performance.now(); if (now - lastTick < 400) return; lastTick = now;
+      const t0 = ctx.currentTime + .01, out = ctx.createGain(); out.gain.value = .9; out.connect(master);
+      // soft airy whoosh rising into the tick
+      const n = noise(.32, 1.2), bp = ctx.createBiquadFilter(), g = ctx.createGain();
+      bp.type = 'bandpass'; bp.Q.value = 1.4;
+      bp.frequency.setValueAtTime(700, t0); bp.frequency.exponentialRampToValueAtTime(4200, t0 + .28);
+      g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(.28, t0 + .12); g.gain.exponentialRampToValueAtTime(.001, t0 + .32);
+      n.connect(bp); bp.connect(g); g.connect(out); n.start(t0);
+      // crisp confirmation tick
+      tone(out, t0, 2637, .26, .32, .18); tone(out, t0, 3951, .27, .14, .14); tone(out, t0, 1318, .26, .12, .22, 'triangle');
+    }
+    return { chaChing, tick };
   })();
 
   /* ---------- no motion library? leave a complete static page ---------- */
   const hasGsap = window.gsap && window.ScrollTrigger;
+  /* ---------- scene 0: channels stream into the AI system, outcomes cascade out ---------- */
+  const s0 = $('#s0'), s0cv = $('#s0Canvas'), s0cx = s0cv.getContext('2d');
+  const s0Chans = $$('#s0Chans .f-node'), s0Core = $('#s0Core'), s0Outs = $$('#s0Out li');
+  const s0f = { inF: 0, outF: 0 };
+  let s0Paths = [], s0Vis = false, s0DPR = 1;
+  function buildS0() {
+    const w = s0.offsetWidth, h = s0.offsetHeight; s0DPR = Math.min(devicePixelRatio || 1, 2);
+    s0cv.width = Math.round(w * s0DPR); s0cv.height = Math.round(h * s0DPR); s0cv.style.width = w + 'px'; s0cv.style.height = h + 'px';
+    const c = offsetIn(s0Core, s0), spread = i => c.x + c.w * (.3 + i * .1);
+    s0Paths = [];
+    s0Chans.forEach((n, i) => { const r = offsetIn(n, s0); s0Paths.push({ k: 'in', a: [r.x + r.w / 2, r.y + r.h], b: [spread(i), c.y] }); });
+    s0Outs.forEach((n, i) => { const r = offsetIn(n, s0); s0Paths.push({ k: 'out', a: [spread(i), c.y + c.h], b: [r.x + r.w / 2, r.y] }); });
+  }
+  const s0pt = (p, t) => { const my = (p.a[1] + p.b[1]) / 2, u = 1 - t;
+    return [u * u * u * p.a[0] + 3 * u * u * t * p.a[0] + 3 * u * t * t * p.b[0] + t * t * t * p.b[0], u * u * u * p.a[1] + 3 * u * u * t * my + 3 * u * t * t * my + t * t * t * p.b[1]]; };
+  function drawS0(ms) {
+    const g = s0cx; g.setTransform(s0DPR, 0, 0, s0DPR, 0, 0); g.clearRect(0, 0, s0cv.width, s0cv.height);
+    s0Paths.forEach((p, idx) => {
+      const f = p.k === 'in' ? s0f.inF : s0f.outF, my = (p.a[1] + p.b[1]) / 2;
+      g.beginPath(); g.moveTo(p.a[0], p.a[1]); g.bezierCurveTo(p.a[0], my, p.b[0], my, p.b[0], p.b[1]);
+      g.globalAlpha = 1; g.strokeStyle = 'rgba(243,236,226,.1)'; g.lineWidth = 1; g.stroke();
+      if (f <= .001) return;
+      g.save(); g.globalAlpha = .6 * f; g.strokeStyle = '#ff8466'; g.lineWidth = 1.6; g.shadowColor = 'rgba(255,111,85,.9)'; g.shadowBlur = 8; g.stroke(); g.restore();
+      for (let k = 0; k < 3; k++) {
+        const t = (ms * .00042 * (1 + (idx % 3) * .15) + k / 3 + idx * .13) % 1; if (t > f) continue;
+        const [x, y] = s0pt(p, t), a = Math.sin(t * Math.PI) * f;
+        g.globalAlpha = a; g.fillStyle = 'rgba(255,111,85,.35)'; g.beginPath(); g.arc(x, y, 6.5, 0, 6.283); g.fill();
+        g.fillStyle = '#ffd9cb'; g.beginPath(); g.arc(x, y, 2.5, 0, 6.283); g.fill();
+      }
+    });
+    g.globalAlpha = 1;
+  }
+  function settleS0() { buildS0(); s0f.inF = s0f.outF = 1; s0Chans.forEach(c => c.classList.add('on')); s0Outs.forEach(l => l.classList.add('on')); s0Core.classList.add('on'); $('#s0Bar').style.transform = 'none'; drawS0(0); }
+
   function settleStatic() {
+    settleS0(); $$('.promise').forEach(p => p.classList.add('in'));
     buildFlow(); applyFlow(1, true); buildAgents(); applyAgents(1); placeScenes();
     $$('.tier').forEach(t => t.classList.add('lit')); $('#tFill').style.transform = 'none';
     $$('.step').forEach(s => s.classList.add('active'));
@@ -1657,21 +1792,38 @@ main{position:relative;z-index:2;overflow-x:clip}
   }
   const bCoral = $('#bCoral'), bPeach = $('#bPeach'), bSlate = $('#bSlate');
   const light = { x: 55, y: 40, s: 1, o: 1 }, target = { ...light };
+  // Catmull-Rom through the anchors: continuous velocity, no corners where sections meet
+  const cr = (p0, p1, p2, p3, t) => { const t2 = t * t, t3 = t2 * t; return .5 * (2 * p1 + (p2 - p0) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 + (3 * p1 - p0 - 3 * p2 + p3) * t3); };
   function sampleLight(y) {
-    if (!anchors.length) return;
-    let v = anchors[anchors.length - 1].v;
+    const n = anchors.length; if (!n) return;
+    let v;
     if (y <= anchors[0].at) v = anchors[0].v;
-    else for (let k = 1; k < anchors.length; k++) if (y < anchors[k].at) { const a = anchors[k - 1], b = anchors[k], t = smooth((y - a.at) / (b.at - a.at)); v = a.v.map((n, j) => lerp(n, b.v[j], t)); break; }
-    target.x = v[0]; target.y = v[1]; target.s = v[2]; target.o = v[3];
+    else if (y >= anchors[n - 1].at) v = anchors[n - 1].v;
+    else for (let k = 1; k < n; k++) if (y < anchors[k].at) {
+      const a = anchors[Math.max(0, k - 2)].v, b = anchors[k - 1].v, c = anchors[k].v, e = anchors[Math.min(n - 1, k + 1)].v;
+      const t = (y - anchors[k - 1].at) / Math.max(1, anchors[k].at - anchors[k - 1].at);
+      v = b.map((_, j) => cr(a[j], b[j], c[j], e[j], t)); break;
+    }
+    target.x = v[0]; target.y = v[1]; target.s = v[2]; target.o = clamp(v[3]);
   }
+  // two chained low-pass stages = an eased glide that never snaps; viewport units ignore mobile URL-bar jitter
+  const glide = { ...light };
+  let vpW = innerWidth, vpH = innerHeight;
+  addEventListener('resize', () => { if (Math.abs(innerWidth - vpW) > 1 || Math.abs(innerHeight - vpH) > 140) { vpW = innerWidth; vpH = innerHeight; } }, { passive: true });
   function paintLight(dt) {
-    const k = reduce ? 1 : 1 - Math.pow(1 - .035, dt / 16.67);
-    for (const key in light) light[key] = lerp(light[key], target[key], k);
-    const W = innerWidth / 100, H = innerHeight / 100;
-    bCoral.style.transform = `translate3d(${(light.x * W).toFixed(1)}px,${(light.y * H).toFixed(1)}px,0) scale(${light.s.toFixed(3)})`;
-    bCoral.style.opacity = light.o.toFixed(3);
-    bPeach.style.transform = `translate3d(${((light.x * .6 + 22) * W).toFixed(1)}px,${((light.y * .4 + 52) * H).toFixed(1)}px,0) scale(.8)`;
-    bSlate.style.transform = `translate3d(${((100 - light.x) * W).toFixed(1)}px,${((95 - light.y) * H).toFixed(1)}px,0) scale(.9)`;
+    const f = Math.min(dt, 64) / 16.67;
+    const k1 = reduce ? 1 : 1 - Math.pow(1 - .045, f), k2 = reduce ? 1 : 1 - Math.pow(1 - .04, f);
+    for (const key in light) light[key] = lerp(light[key], target[key], k1);
+    // second stage, speed-capped: the light can accelerate gently but never lurch across the screen
+    const gx = (light.x - glide.x) * k2, gy = (light.y - glide.y) * k2, len = Math.hypot(gx, gy), cap = .7 * f;
+    const sc = reduce || len < 1e-6 ? 1 : cap * Math.tanh(len / cap) / len;   // soft limit: no corner in the speed curve
+    glide.x += gx * sc; glide.y += gy * sc;
+    glide.s = lerp(glide.s, light.s, k2); glide.o = lerp(glide.o, light.o, k2);
+    const W = vpW / 100, H = vpH / 100;
+    bCoral.style.transform = `translate3d(${(glide.x * W).toFixed(2)}px,${(glide.y * H).toFixed(2)}px,0) scale(${glide.s.toFixed(4)})`;
+    bCoral.style.opacity = clamp(glide.o).toFixed(3);
+    bPeach.style.transform = `translate3d(${((glide.x * .6 + 22) * W).toFixed(2)}px,${((glide.y * .4 + 52) * H).toFixed(2)}px,0) scale(.8)`;
+    bSlate.style.transform = `translate3d(${((100 - glide.x) * W).toFixed(2)}px,${((95 - glide.y) * H).toFixed(2)}px,0) scale(.9)`;
   }
   gsap.to('#warm', { opacity: 1, ease: 'none', scrollTrigger: { trigger: '#contact', start: 'top bottom', end: 'center center', scrub: true } });
 
@@ -1770,6 +1922,22 @@ main{position:relative;z-index:2;overflow-x:clip}
     tl.eventCallback('onRepeat', () => rows.forEach(r => r.classList.remove('done')));
     return tl.repeat(-1).repeatDelay(.4).pause();
   }
+  function tlStreams() {       // scene 0: self-playing loop, channels -> AI system -> outcomes, completion tick
+    const tl = sceneTL({ ease: 'power3.out', duration: .6 });
+    tl.fromTo(s0f, { inF: 0, outF: 0 }, { inF: 0, outF: 0, duration: .01 }, 0);
+    s0Chans.forEach((c, i) => tl.call(() => c.classList.add('on'), null, .1 + i * .18));
+    tl.to(s0f, { inF: 1, duration: 1.6, ease: 'power1.inOut' }, .1)
+      .call(() => s0Core.classList.add('on'), null, 1.3)
+      .fromTo('#s0Bar', { scaleX: 0 }, { scaleX: 1, duration: 1, ease: 'power2.inOut' }, 1.3)
+      .to(s0f, { outF: 1, duration: 1.8, ease: 'power1.inOut' }, 2.1);
+    s0Outs.forEach((li, i) => tl.from(li, { opacity: 0, y: 16, scale: .96 }, 2.4 + i * .3).call(() => li.classList.add('on'), null, 2.65 + i * .3));
+    tl.from('#s0Done', { opacity: 0, scale: .8, ease: 'back.out(2.4)' }, 4.2)
+      .call(() => Sound.tick(), null, 4.2)
+      .to({}, { duration: 2.2 })
+      .to(s0f, { inF: 0, outF: 0, duration: .5, ease: 'power1.in' });
+    tl.eventCallback('onRepeat', () => { s0Chans.forEach(c => c.classList.remove('on')); s0Outs.forEach(l => l.classList.remove('on')); s0Core.classList.remove('on'); });
+    return tl.repeat(-1).repeatDelay(.3).pause();
+  }
   function tlDay() {           // scene 5: the after layer wipes across the before
     const s5 = $('#s5');
     return gsap.timeline({ defaults: { ease: 'none' } })
@@ -1792,6 +1960,8 @@ main{position:relative;z-index:2;overflow-x:clip}
     ScrollTrigger.create(scrubIn('#s3', { animation: tlFunnel() }));
     const crmTL = tlCRM(), dashTL = tlDash();
     const loopWhenVisible = (sel, tl) => ScrollTrigger.create({ trigger: sel, start: 'top 88%', end: 'bottom 12%', onToggle: st => st.isActive ? tl.play() : tl.pause() });
+    const streamTL = tlStreams();
+    ScrollTrigger.create({ trigger: s0, start: 'top 90%', end: 'bottom 10%', onToggle: st => { s0Vis = st.isActive; st.isActive ? streamTL.play() : streamTL.pause(); } });
     loopWhenVisible('#s1', crmTL); loopWhenVisible('#s4', dashTL);
     ScrollTrigger.addEventListener('refresh', () => crmTL.invalidate());
   }
@@ -1799,6 +1969,10 @@ main{position:relative;z-index:2;overflow-x:clip}
   /* ================================================================
      10. RESPONSIVE MOTION (gsap.matchMedia, successor to ScrollTrigger.matchMedia)
      ================================================================ */
+  // promise stamps: pop in (and check themselves) as their scene arrives
+  const stampOn = el => ScrollTrigger.create({ trigger: el, start: 'top 86%', onEnter: () => el.classList.add('in'), onLeaveBack: () => el.classList.remove('in') });
+  if (reduce) $$('.promise').forEach(p => p.classList.add('in'));
+  else $$('.promise:not(.in-stack)').forEach(stampOn);
   const mm = gsap.matchMedia();
   const prox = { flow: { p: 0 }, ag: { p: 0 } };
 
@@ -1826,6 +2000,11 @@ main{position:relative;z-index:2;overflow-x:clip}
           .to(dims[i - 1], { opacity: .8, duration: 1 }, at);
       });
       st.to({}, { duration: 1.8 });
+      // each leak card stamps its promise once it has landed
+      cardsEls.forEach((c, i) => { const p = $('.promise', c); if (!p) return; p.classList.add('in');
+        st.fromTo(p, { opacity: 0, scale: .9 }, { opacity: 1, scale: 1, duration: .5, ease: 'back.out(2)' }, i ? i * 2.6 + .9 : .3); });
+    } else {
+      $$('.promise.in-stack').forEach(stampOn);
     }
 
     // agents: columns at different speeds, cards tilt toward the cursor
@@ -1869,7 +2048,7 @@ main{position:relative;z-index:2;overflow-x:clip}
     // scene 5: pinned before/after split
     const day = ScrollTrigger.create({ animation: tlDay(), trigger: '#s5', pin: true, start: 'center 55%', end: '+=100%', scrub: .6, onUpdate: dayUpdate, invalidateOnRefresh: true, anticipatePin: 1, refreshPriority: 1 });
 
-    return () => { root.classList.remove('stack-on'); proc.classList.remove('hs-on'); offs.forEach(f => f()); day.kill(); gsap.set([...cardsEls, ...dims, track], { clearProps: 'all' }); };
+    return () => { root.classList.remove('stack-on'); proc.classList.remove('hs-on'); offs.forEach(f => f()); day.kill(); gsap.set([...cardsEls, ...dims, track, ...$$('.promise.in-stack')], { clearProps: 'all' }); };
   });
 
   mm.add('(max-width: 767px) and (prefers-reduced-motion: no-preference)', () => {
@@ -1879,12 +2058,15 @@ main{position:relative;z-index:2;overflow-x:clip}
       s.classList.add('active'); gsap.from(s, { y: 40, opacity: 0, duration: 1.1 });
       gsap.fromTo($('.step-ic', s), { scale: .4, rotate: -30 }, { scale: 1, rotate: 0, duration: .9, delay: .2, ease: 'back.out(2.6)' });
     } }));
+    $$('.promise.in-stack').forEach(stampOn);
     const day = ScrollTrigger.create(scrubIn('#s5', { animation: tlDay(), start: 'top 72%', end: 'center 45%', scrub: .6, onUpdate: dayUpdate }));
     return () => day.kill();
   });
 
   // why AI flow + CRM journey: pinned on large screens, scrubbed in place elsewhere
-  const flowTween = st => gsap.to(prox.flow, { p: 1, ease: 'none', scrollTrigger: st, onUpdate: () => applyFlow(prox.flow.p) });
+  let flowLast = 0;
+  const flowTween = st => gsap.to(prox.flow, { p: 1, ease: 'none', scrollTrigger: st, onUpdate: () => {
+    const p = prox.flow.p; if (p >= .97 && flowLast < .97) Sound.tick(); flowLast = p; applyFlow(p); } });
   mm.add('(min-width: 1060px) and (min-height: 700px) and (prefers-reduced-motion: no-preference)', () => {
     $('#why').classList.add('why-pinned'); prox.flow.p = 0;
     const t = flowTween({ trigger: '#whyPin', pin: true, start: 'top top', end: '+=140%', scrub: .6, anticipatePin: 1, refreshPriority: 4 });
@@ -1920,6 +2102,7 @@ main{position:relative;z-index:2;overflow-x:clip}
     sampleLight(scrollPos()); paintLight(dt);
     if (reduce) return;
     const boost = Math.min(velocity() * .045, 1.6), sec = dt / 1000;
+    if (s0Vis) drawS0(time * 1000);
     if (flowVis) for (const k of packets) {
       if (!k.f.live) { if (k.g.style.opacity !== '0') k.g.style.opacity = 0; continue; }
       k.u += sec * (.8 + boost) * k.sp;
@@ -1944,8 +2127,8 @@ main{position:relative;z-index:2;overflow-x:clip}
      12. GEOMETRY ON REFRESH (after pins and layout settle)
      ================================================================ */
   ScrollTrigger.addEventListener('refreshInit', placeScenes);
-  ScrollTrigger.addEventListener('refresh', () => { buildFlow(); buildAgents(); buildAnchors(); stripStep(); });
-  if (reduce) { buildFlow(); applyFlow(1, true); buildAgents(); applyAgents(1); }
+  ScrollTrigger.addEventListener('refresh', () => { buildFlow(); buildAgents(); buildAnchors(); stripStep(); buildS0(); if (reduce) drawS0(0); });
+  if (reduce) { buildFlow(); applyFlow(1, true); buildAgents(); applyAgents(1); settleS0(); $$('.promise').forEach(p => p.classList.add('in')); }
   $$('.tcard').forEach(c => c.addEventListener('pointermove', e => {
     const r = c.getBoundingClientRect(); c.style.setProperty('--mx', (e.clientX - r.left) + 'px'); c.style.setProperty('--my', (e.clientY - r.top) + 'px');
   }, { passive: true }));
