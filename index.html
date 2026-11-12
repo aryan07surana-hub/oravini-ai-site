@@ -662,6 +662,97 @@ main{position:relative;z-index:2;overflow-x:clip}
 .hs-on .hs-pin{justify-content:flex-start;padding-top:clamp(92px,12vh,118px)}
 
 /* =====================================================================
+   GLOWING CTAs: soft, slowly pulsing coral halo on every Book a call / WhatsApp CTA
+   ===================================================================== */
+:is(.nav-cta,.hero,.after-cta,.final) :is(a.btn,a.tlink):is([href*="calendly.com"],[href*="wa.me"]){isolation:isolate}
+:is(.nav-cta,.hero,.after-cta,.final) a.btn:is([href*="calendly.com"],[href*="wa.me"])::after{
+  content:'';position:absolute;inset:-5px;z-index:-1;border-radius:inherit;pointer-events:none;
+  box-shadow:0 0 18px 4px rgba(255,111,85,.55),0 0 42px 10px rgba(255,111,85,.22);
+  opacity:.35;animation:ctaGlow 3.2s ease-in-out infinite}
+:is(.nav-cta,.hero,.after-cta,.final) a.tlink:is([href*="calendly.com"],[href*="wa.me"])::before{
+  content:'';position:absolute;inset:4px -12px;z-index:-1;border-radius:999px;pointer-events:none;
+  background:radial-gradient(ellipse at center,rgba(255,111,85,.26),rgba(255,111,85,0) 72%);
+  box-shadow:0 0 0 1px rgba(255,144,113,.22);
+  opacity:.4;animation:ctaGlow 3.2s ease-in-out infinite;animation-delay:-1.6s}
+@keyframes ctaGlow{0%,100%{opacity:.35}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){
+  :is(.nav-cta,.hero,.after-cta,.final) a.btn:is([href*="calendly.com"],[href*="wa.me"])::after,
+  :is(.nav-cta,.hero,.after-cta,.final) a.tlink:is([href*="calendly.com"],[href*="wa.me"])::before{animation:none!important;opacity:.7}
+}
+
+/* =====================================================================
+   CHAT ASSISTANT (scripted, client-side only)
+   ===================================================================== */
+.chat{position:fixed;right:clamp(12px,2vw,24px);bottom:clamp(12px,2vw,22px);z-index:66;font-family:'Inter Tight',system-ui,sans-serif}
+.chat .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.chat-launch{position:relative;display:grid;place-items:center;width:54px;height:54px;border-radius:50%;cursor:pointer;color:#fff8f2;border:1px solid rgba(255,255,255,.28);
+  background:linear-gradient(180deg,#ff8466,#f2604b);box-shadow:0 14px 36px -10px var(--coral-glow),inset 0 1px 0 rgba(255,255,255,.35);
+  transition:transform .5s var(--ease),opacity .4s,box-shadow .4s}
+.chat-launch:hover{box-shadow:0 18px 44px -10px rgba(255,111,85,.85),inset 0 1px 0 rgba(255,255,255,.35)}
+.chat-launch svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.chat-launch .x{display:none}
+.chat.open .chat-launch .x{display:block}.chat.open .chat-launch .c{display:none}
+.chat-dot{position:absolute;right:2px;top:2px;width:12px;height:12px;border-radius:50%;background:#fff4ee;border:2px solid #f2604b}
+.chat.seen .chat-dot{display:none}
+.chat.tucked:not(.open) .chat-launch{transform:translateX(160%);opacity:0;pointer-events:none;transition:transform .28s var(--ease),opacity .18s}
+.chat.tucked:not(.open) .chat-teaser{opacity:0;pointer-events:none}
+.chat-teaser{position:absolute;right:0;bottom:66px;width:min(260px,calc(100vw - 32px));padding:13px 34px 13px 15px;border-radius:16px 16px 4px 16px;font-size:.88rem;line-height:1.4;color:var(--cream);
+  background:linear-gradient(160deg,rgba(30,40,72,.92),rgba(14,24,48,.94));border:1px solid rgba(255,144,113,.35);box-shadow:0 20px 40px -18px rgba(3,7,20,.8);transition:opacity .4s}
+.chat-teaser p{margin:0}
+.chat-teaser button{all:unset;position:absolute;right:8px;top:6px;width:22px;height:22px;display:grid;place-items:center;border-radius:50%;cursor:pointer;color:var(--cream-3);font-size:1rem}
+.chat-teaser button:focus-visible{outline:2px solid var(--coral-2)}
+.chat-panel{position:absolute;right:0;bottom:68px;width:min(380px,calc(100vw - 24px));height:min(560px,calc(100vh - 130px));display:flex;flex-direction:column;overflow:hidden;
+  border-radius:24px;background:linear-gradient(160deg,rgba(26,36,66,.94),rgba(12,20,42,.96));-webkit-backdrop-filter:blur(26px) saturate(150%);backdrop-filter:blur(26px) saturate(150%)}
+.chat-panel::before{content:'';position:absolute;inset:0;pointer-events:none;opacity:.35;mix-blend-mode:overlay;
+  background-image:repeating-linear-gradient(90deg,rgba(255,255,255,0) 0,rgba(255,255,255,.12) 3px,rgba(255,255,255,.03) 6px,rgba(0,0,20,.2) 10px,rgba(0,0,0,0) 13px)}
+.chat-panel[hidden]{display:none}
+.chat-head{position:relative;display:flex;align-items:center;gap:11px;padding:15px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+.chat-head .glyph{width:26px;height:26px}
+.chat-title{margin:0;font-weight:500;font-size:.98rem}
+.chat-sub{display:flex;align-items:center;gap:6px;margin:2px 0 0;font-size:.72rem;color:var(--cream-3)}
+.chat-sub .live{display:inline-block;width:6px;height:6px}
+.chat-x{all:unset;margin-left:auto;width:30px;height:30px;display:grid;place-items:center;border-radius:50%;cursor:pointer;color:var(--cream-2);font-size:1.2rem}
+.chat-x:hover{background:rgba(255,255,255,.08)}
+.chat-x:focus-visible,.chat-form button:focus-visible,.chat-chips button:focus-visible{outline:2px solid var(--coral-2);outline-offset:2px}
+.chat-log{position:relative;flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;overscroll-behavior:contain;scrollbar-width:thin}
+.msg-b,.msg-u{max-width:88%;padding:10px 13px;border-radius:16px;font-size:.9rem;line-height:1.45;word-wrap:break-word}
+.msg-b{align-self:flex-start;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.1);border-bottom-left-radius:5px;color:var(--cream)}
+.msg-u{align-self:flex-end;background:linear-gradient(180deg,rgba(255,132,102,.92),rgba(242,96,75,.88));color:#fff8f2;border-bottom-right-radius:5px}
+.msg-b p{margin:0}.msg-b p+p,.msg-b p+ul,.msg-b ul+p{margin-top:8px}
+.msg-b ul{margin:6px 0 0;padding-left:18px}.msg-b li{margin:2px 0}
+.msg-b b{font-weight:500;color:#fff}
+.msg-b a{color:var(--coral-2);text-underline-offset:3px}
+.msg-typing{display:flex;gap:4px;padding:13px 14px}
+.msg-typing i{width:6px;height:6px;border-radius:50%;background:var(--cream-2);animation:typing 1.2s ease-in-out infinite}
+.msg-typing i:nth-child(2){animation-delay:.15s}.msg-typing i:nth-child(3){animation-delay:.3s}
+.chat-chips{position:relative;display:flex;gap:6px;padding:0 16px 10px;overflow-x:auto;scrollbar-width:none}
+.chat-chips::-webkit-scrollbar{display:none}
+.chat-chips button{all:unset;flex:none;padding:7px 12px;border-radius:999px;font-size:.78rem;cursor:pointer;color:var(--cream);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);transition:border-color .3s,background-color .3s}
+.chat-chips button:hover{border-color:rgba(255,144,113,.55);background:rgba(255,111,85,.12)}
+.chip-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip-grid button{all:unset;padding:7px 11px;border-radius:999px;font-size:.78rem;line-height:1.2;cursor:pointer;color:var(--cream);background:rgba(255,111,85,.1);border:1px solid rgba(255,144,113,.35);transition:border-color .3s,background-color .3s}
+.chip-grid button:hover{border-color:rgba(255,144,113,.7);background:rgba(255,111,85,.2)}
+.chip-grid button:focus-visible{outline:2px solid var(--coral-2);outline-offset:2px}
+.msg-b .nudge{margin-top:10px!important;padding-top:9px;border-top:1px solid rgba(255,255,255,.1);font-size:.86rem;color:var(--cream-2)}
+.chat-form{position:relative;display:flex;gap:8px;padding:10px 12px;border-top:1px solid rgba(255,255,255,.1)}
+.chat-form input{flex:1;min-width:0;padding:11px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:rgba(5,9,22,.45);color:var(--cream);font:400 .9rem 'Inter Tight',sans-serif;outline:none}
+.chat-form input::placeholder{color:var(--cream-3)}
+.chat-form input:focus{border-color:rgba(255,144,113,.6)}
+.chat-form button{all:unset;width:42px;height:42px;flex:none;display:grid;place-items:center;border-radius:50%;cursor:pointer;color:#fff8f2;background:linear-gradient(180deg,#ff8466,#f2604b)}
+.chat-form button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.chat-cta{position:relative;display:flex;gap:8px;padding:0 12px 12px}
+.chat-cta .btn{flex:1;justify-content:center}
+@media(min-width:720px){
+  /* right clearance so the chat launcher (54px, right clamp(12px,2vw,24px)) never sits on strip text */
+  .strip ul{margin-right:max(0px, calc(clamp(12px, 2vw, 24px) + 54px + 14px - (100vw - min(1280px, 100vw - 2 * var(--gut))) / 2))}
+}
+@media(max-width:560px){
+  /* bottom sheet that sits above the Sound pill, never over it */
+  .chat-panel{position:fixed;left:12px;right:12px;width:auto;bottom:calc(clamp(12px,2vw,22px) + 54px);height:min(70vh,calc(100vh - 150px))}
+}
+@media (prefers-reduced-motion:reduce){.chat-launch,.chat-teaser{transition:none}}
+
+/* =====================================================================
    v3: realistic problem scenes, payment toasts, sound toggle
    ===================================================================== */
 .illo-call{height:clamp(250px,34vh,300px);display:flex;align-items:center;justify-content:center;gap:clamp(14px,3vw,34px);padding:12px}
@@ -892,6 +983,32 @@ main{position:relative;z-index:2;overflow-x:clip}
 </nav>
 
 <button class="sound" id="soundBtn" type="button" aria-pressed="true" aria-label="Toggle sound effects"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5v5h3.5l4.5 4V5.5L7.5 9.5H4Z"/><path class="wv" d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11"/><path class="sl" d="m16 9.5 5 5M21 9.5l-5 5"/></svg><span>Sound on</span></button>
+<div class="chat" id="chat">
+  <div class="chat-teaser" id="chatTeaser" hidden><p>Questions about how it works? Ask me anything, or book a call.</p><button type="button" id="chatTeaserX" aria-label="Dismiss">&times;</button></div>
+  <section class="glass chat-panel" id="chatPanel" role="dialog" aria-modal="false" aria-labelledby="chatTitle" hidden>
+    <header class="chat-head">
+      <svg class="glyph" aria-hidden="true"><use href="#i-temple"/></svg>
+      <div><p class="chat-title" id="chatTitle">Oravini assistant</p><p class="chat-sub"><span class="live"></span>Answers from this site · a human is one tap away</p></div>
+      <button class="chat-x" id="chatClose" type="button" aria-label="Close chat">&times;</button>
+    </header>
+    <div class="chat-log" id="chatLog" role="log" aria-live="polite" aria-label="Conversation"></div>
+    <div class="chat-chips" id="chatChips" aria-label="Suggested questions"></div>
+    <form class="chat-form" id="chatForm" autocomplete="off">
+      <label class="sr" for="chatInput">Ask a question</label>
+      <input id="chatInput" type="text" maxlength="300" placeholder="Ask about services, process, booking...">
+      <button type="submit" aria-label="Send"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    </form>
+    <div class="chat-cta">
+      <a class="btn btn-coral btn-sm" href="https://calendly.com/aryan07surana/30min" target="_blank" rel="noopener">Book a call<svg class="ico"><use href="#i-arrow"/></svg></a>
+      <a class="btn btn-glass btn-sm" href="https://wa.me/919823537205?text=Hey%2C%20I%20want%20to%20implement%20AI%20into%20my%20business" target="_blank" rel="noopener">WhatsApp us<svg class="ico"><use href="#i-arrow"/></svg></a>
+    </div>
+  </section>
+  <button class="chat-launch" id="chatLaunch" type="button" aria-expanded="false" aria-controls="chatPanel" aria-label="Open chat with the Oravini assistant">
+    <svg class="c" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/></svg>
+    <svg class="x" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    <span class="chat-dot" aria-hidden="true"></span>
+  </button>
+</div>
 
 <main id="main">
 
@@ -2137,6 +2254,194 @@ main{position:relative;z-index:2;overflow-x:clip}
   if (d.fonts && d.fonts.ready) d.fonts.ready.then(() => ScrollTrigger.refresh());
   addEventListener('load', () => ScrollTrigger.refresh());
   ScrollTrigger.refresh();
+})();
+</script>
+<script>
+/* =====================================================================
+   ORAVINI ASSISTANT: scripted, runs entirely in the browser.
+   No network calls, no keys. Every answer is drawn from what this site already says.
+   ===================================================================== */
+(() => {
+  'use strict';
+  const d = document, $ = s => d.querySelector(s);
+  const CAL = 'https://calendly.com/aryan07surana/30min';
+  const WA = 'https://wa.me/919823537205?text=Hey%2C%20I%20want%20to%20implement%20AI%20into%20my%20business';
+  const book = '<a href="' + CAL + '" target="_blank" rel="noopener">book a call</a>';
+  const wa = '<a href="' + WA + '" target="_blank" rel="noopener">WhatsApp us</a>';
+  const human = 'Book a call or WhatsApp us and a person will take it from there: ' + book + ' or ' + wa + '.';
+
+  /* ---- FAQ: every chip has a fixed, premade answer. Typed questions match to the closest one by keyword.
+          Facts come only from this site. No prices, no invented claims. Every reply ends with a nudge to the two CTAs. ---- */
+  const FAQ = [
+    { id: 'what', chip: 'What does Oravini do?', generic: true,
+      keys: ['what do you do', 'what is oravini', 'what does oravini do', 'who are you', 'oravini', 'services', 'what you do', 'what do you offer', 'your company', 'tell me about oravini', 'tell me about you', 'explain'],
+      a: '<p>Oravini AI builds <b>AI infrastructure for business owners</b> and automates their systems. We build the ops, automate the systems and market the brand.</p><p>It is installed, run and grown for you, so the business stops depending on you being everywhere at once.</p>' },
+    { id: 'who', chip: 'Who is it for?', generic: true,
+      keys: ['who is it for', 'who is this for', 'who do you work with', 'who do you help', 'who', 'is this for me', 'is it for me', 'right for', 'suitable', 'a good fit', 'established'],
+      a: '<p>Business owners who want to scale, especially <b>service businesses and established owners</b> who expect their operation to run at the standard they do.</p><p>We also help <b>creators and info coaches</b> scale the business behind the content.</p>' },
+    { id: 'industry', chip: 'Do you work with my industry?',
+      keys: ['industry', 'my industry', 'niche', 'sector', 'my field', 'type of business', 'kind of business', 'my business', 'small business', 'service business', 'agency', 'clinic', 'consultancy', 'firm', 'trades', 'local business'],
+      a: '<p>Very likely. We work with business owners broadly rather than one niche, with a focus on <b>service businesses and established owners</b>.</p><p>The system is shaped around how your business already operates, so the real question is where your business leaks. That is exactly what the audit and the first call uncover.</p>' },
+    { id: 'creators', chip: 'Do you work with creators and coaches?',
+      keys: ['creator', 'creators', 'coach', 'coaches', 'coaching', 'info coach', 'course', 'courses', 'influencer', 'content creator'],
+      a: '<p>Yes. As well as business owners, we help <b>creators and info coaches</b> scale the business behind the content, on the same infrastructure, shaped around how you sell.</p><p>That means <b>funnels, sales systems and automation</b>.</p>' },
+    { id: 'tiers', chip: "What's included in each tier?",
+      keys: ['tiers', 'tier', 'packages', 'package', 'plans', 'plan', 'ladder', 'options', 'what is included', 'whats included', 'included', 'include', 'offerings', 'offer'],
+      a: '<p>The offer is a ladder: land small, expand, own the stack.</p><ul><li><b>Tier 0, the paid AI audit:</b> where AI pays for itself, and a plan you keep</li><li><b>Tier 1, AI growth engine:</b> CRM, speed-to-lead, AI chat and voice receptionist, nurture, reviews, dashboard</li><li><b>Tier 2, AI back office:</b> AI office manager, accountant, sales coordinator, ops and reporting agents</li><li><b>Tier 3, growth and marketing:</b> Meta and Google ads, AI creative, landing pages, organic content, attribution</li><li><b>Tier 4, custom software:</b> your own platform, data migration off rented tools, an AI layer on top</li></ul><p>Every tier sits on the same infrastructure, so nothing you build is thrown away. Tap a tier below for the full list.</p>' },
+    { id: 'arc', chip: 'What are the three steps?',
+      keys: ['three steps', '3 steps', 'arc', 'roadmap', 'journey', 'step 1', 'step 2', 'step 3', 'automate your ops', 'fix your funnel', 'own the software'],
+      a: '<p>Everything follows a three-step arc:</p><ul><li><b>Step 1: Automate your ops</b> (AI growth engine and AI back office)</li><li><b>Step 2: Fix your funnel</b> (growth and marketing)</li><li><b>Step 3: Own the software</b> (custom software)</li></ul><p>Every step starts with the audit, which shows which step to take first.</p>' },
+    { id: 'process', chip: 'How does the process work?',
+      keys: ['process', 'how does it work', 'how it works', 'how do you work', 'onboarding', 'what happens next', 'next steps', 'build', 'launch', 'manage', 'support', 'ongoing', 'steps'],
+      a: '<p>Four steps, no mystery:</p><ul><li><b>Audit:</b> we find where the money leaks.</li><li><b>Build:</b> we install the system around your business.</li><li><b>Launch:</b> it goes live and starts working.</li><li><b>Manage:</b> we run, tune and grow it with you.</li></ul><p>Every engagement runs the same way, whichever step you start with.</p>' },
+    { id: 'fast', chip: 'How fast can we start?',
+      keys: ['how fast', 'how soon', 'how quickly', 'how long', 'timeline', 'timeframe', 'turnaround', 'start soon', 'start now', 'when can', 'weeks', 'months', 'quick'],
+      a: '<p>The first step is quick to take: a thirty-minute call where we look at where your business leaks and which step comes first.</p><p>From there, timing depends on scope and which step you start with, so we map it with you on that call rather than guess here.</p>' },
+    { id: 'start', chip: 'How do we start?',
+      keys: ['how do we start', 'how do i start', 'get started', 'getting started', 'where do i start', 'where to start', 'first step', 'begin', 'sign up', 'start'],
+      a: '<p>Simple: book a thirty-minute call. We look at where your business leaks and what a system would recover, then tell you which step to take first.</p><p>From there it is the paid AI audit, then build, launch and manage.</p>' },
+    { id: 'call', chip: 'What happens on the call?',
+      keys: ['the call', 'on the call', 'what happens on', 'meeting', 'appointment', 'calendly', 'demo', '30 minutes', 'thirty minutes', 'consultation call', 'discovery call'],
+      a: '<p>It is thirty minutes. We look at where your business leaks and what a system would recover, then tell you which step of the arc comes first.</p><p>No pitch deck. A straight conversation about your business.</p>' },
+    { id: 'price', chip: 'How much does it cost?',
+      keys: ['price', 'pricing', 'cost', 'costs', 'how much', 'fee', 'fees', 'budget', 'expensive', 'cheap', 'rate', 'rates', 'quote', 'charge', 'afford', 'investment', 'monthly', 'retainer'],
+      a: '<p>There is no public rate card, because it genuinely depends on scope: which step you start with and what your business needs.</p><p>The audit is paid, and you keep the plan either way. For a clear answer on your business, a short call is the quickest route.</p>' },
+    { id: 'ai', chip: 'What does the AI actually do?',
+      keys: ['what does the ai do', 'what does the ai', 'ai actually', 'the ai', 'ai do', 'chatbot', 'automation', 'automate', 'agents', 'agent', 'ai system', 'why ai', 'why use ai', 'after hours', 'night', '24/7'],
+      a: '<p>Not a chatbot glued to a website. It is infrastructure working underneath your business. It:</p><ul><li>Answers every call</li><li>Follows up every lead</li><li>Books every slot</li><li>Reminds every client</li><li>Shows what came back</li></ul><p>All day, every day, without adding headcount.</p>' },
+    { id: 'audit', chip: 'Tier 0: the paid AI audit',
+      keys: ['audit', 'tier 0', 'tier zero', 'assessment', 'paid audit', 'review my business'],
+      a: '<p><b>Tier 0: The paid AI audit.</b> We map where AI pays for itself in your business. You keep the plan either way.</p><ul><li>A map of where AI pays for itself</li><li>Where your business leaks</li><li>Which step to start with</li><li>A plan you keep either way</li></ul>' },
+    { id: 'growth', chip: 'Tier 1: AI growth engine',
+      keys: ['tier 1', 'tier one', 'growth engine', 'crm', 'lead', 'leads', 'follow up', 'follow-up', 'speed to lead', 'receptionist', 'voice', 'calls', 'missed calls', 'phone', 'chat agent', 'instagram', 'sms', 'reviews', 'google reviews', 'nurture', 'reactivation', 'dashboard'],
+      a: '<p><b>Tier 1: AI growth engine</b> (Step 1, automate your ops). Every lead caught, answered and followed up.</p><ul><li>CRM setup</li><li>Speed-to-lead follow-up</li><li>AI chat agent on web, Instagram and SMS</li><li>24/7 AI voice receptionist</li><li>Nurture sequences</li><li>Dead-lead reactivation</li><li>Google review engine</li><li>Leads-to-revenue dashboard</li></ul>' },
+    { id: 'backoffice', chip: 'Tier 2: AI back office',
+      keys: ['tier 2', 'tier two', 'back office', 'backoffice', 'office manager', 'accountant', 'accounting', 'bookkeeping', 'sales coordinator', 'ops agent', 'operations', 'reporting', 'admin', 'invoices', 'busywork'],
+      a: '<p><b>Tier 2: AI back office</b> (Step 1, automate your ops). The work behind the work, handled.</p><ul><li>AI office manager</li><li>AI accountant</li><li>AI sales coordinator</li><li>AI ops agent</li><li>AI reporting agent</li></ul>' },
+    { id: 'marketing', chip: 'Tier 3: growth and marketing',
+      keys: ['tier 3', 'tier three', 'marketing', 'ads', 'advertising', 'meta', 'facebook', 'google ads', 'ad creative', 'landing page', 'landing pages', 'split testing', 'content', 'organic', 'attribution', 'funnel', 'brand', 'social media'],
+      a: '<p><b>Tier 3: Growth and marketing</b> (Step 2, fix your funnel). Market the brand: ads and content that bring the right clients in.</p><ul><li>Meta and Google ads</li><li>AI ad creative</li><li>Landing pages with split testing</li><li>Organic content</li><li>Attribution</li></ul>' },
+    { id: 'software', chip: 'Tier 4: custom software',
+      keys: ['tier 4', 'tier four', 'custom software', 'software', 'app', 'platform', 'build an app', 'migration', 'migrate', 'rented tools'],
+      a: '<p><b>Tier 4: Custom software</b> (Step 3, own the software). Stop renting your tools and own your platform.</p><ul><li>Your own platform or app</li><li>Data migration off rented tools</li><li>An AI layer on top</li></ul>' },
+    { id: 'own', chip: 'Do I own the system and my data?',
+      keys: ['own', 'ownership', 'my data', 'data', 'lock in', 'locked in', 'own it', 'who owns', 'keep it'],
+      a: '<p>That is the point of Step 3. With <b>custom software</b> it is yours outright: your data, your platform, an AI layer on top, including migrating your data off rented tools.</p><p>And because every tier sits on the same infrastructure, nothing you build along the way is thrown away.</p>' },
+    { id: 'results', chip: 'Do you have results or case studies?',
+      keys: ['results', 'guarantee', 'case study', 'case studies', 'proof', 'testimonials', 'examples', 'portfolio', 'roi', 'return', 'success', 'track record'],
+      a: '<p>We do not publish numbers or client stories on this site. The honest answer comes from your own business: on a call we look at where it leaks and what a system would recover.</p>' },
+    { id: 'human', chip: 'Can I talk to a person?',
+      keys: ['contact', 'whatsapp', 'email', 'phone number', 'reach you', 'get in touch', 'human', 'person', 'real person', 'someone', 'speak to', 'talk to', 'book', 'booking', 'call', 'schedule'],
+      a: '<p>Of course. A person is one tap away, and you can choose whichever suits you: a quick WhatsApp message, or a thirty-minute call.</p>' },
+    { id: 'greet', chip: null, generic: true, keys: ['hi', 'hello', 'hey', 'good morning', 'good afternoon', 'good evening', 'hiya', 'yo'],
+      a: '<p>Hi! Ask me anything about Oravini, or tap one of the questions below.</p>' },
+    { id: 'thanks', chip: null, generic: true, keys: ['thanks', 'thank you', 'cheers', 'great', 'perfect', 'awesome', 'bye', 'goodbye'],
+      a: '<p>Glad that helped.</p>' }
+  ];
+  const byId = Object.fromEntries(FAQ.map(f => [f.id, f]));
+
+  // every reply closes with a natural nudge to the two CTAs (rotated so it never feels canned)
+  const NUDGES = [
+    'Want to see what this looks like for your business? ' + book.replace('book a call', 'Book a call') + ' or ' + wa + '.',
+    'The easiest next step is a quick call: ' + book.replace('book a call', 'Book a call') + ', or ' + wa + ' if you would rather message.',
+    'Happy to go deeper on this with you. ' + book.replace('book a call', 'Book a call') + ' or ' + wa + '.',
+    'A short call turns this into a plan for your business. ' + book.replace('book a call', 'Book a call') + ', or ' + wa + '.'
+  ];
+  let nudgeI = 0;
+  const withNudge = html => html + '<p class="nudge">' + NUDGES[nudgeI++ % NUDGES.length] + '</p>';
+  const FALLBACK = '<p>Good question, and one a person on our team answers best. We would genuinely like to hear about your business.</p>';
+
+  const norm = t => ' ' + t.toLowerCase().replace(/[’']/g, '').replace(/[^a-z0-9/+\s-]/g, ' ').replace(/\s+/g, ' ').trim() + ' ';
+  function match(q) {
+    const t = norm(q); let best = null, bestScore = 0;
+    for (const f of FAQ) {
+      let sc = 0;
+      for (const k of f.keys) if (t.includes(' ' + k + ' ') || t.includes(' ' + k + 's ') || t.includes(' ' + k + 'es ') || (k.length > 6 && !k.includes(' ') && t.includes(k))) sc += k.includes(' ') ? 2.2 : 1;
+      if (f.id === 'price' && sc) return f;                        // any pricing question gets the pricing answer, never a figure
+      if (f.generic) sc *= .6;
+      if (sc > bestScore) { bestScore = sc; best = f; }
+    }
+    return bestScore >= .6 ? best : null;
+  }
+  function answer(q) { const f = match(q); return withNudge(f ? f.a : FALLBACK); }
+
+  // ---- UI ----
+  const chat = $('#chat'), panel = $('#chatPanel'), launch = $('#chatLaunch'), log = $('#chatLog'), form = $('#chatForm'), input = $('#chatInput');
+  const chips = $('#chatChips'), teaser = $('#chatTeaser'), closeBtn = $('#chatClose');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let started = false;
+  const ss = { get: k => { try { return sessionStorage.getItem(k); } catch (e) { return null; } }, set: (k, v) => { try { sessionStorage.setItem(k, v); } catch (e) {} } };
+
+  function add(html, who) {
+    const m = d.createElement('div'); m.className = who === 'u' ? 'msg-u' : 'msg-b';
+    if (who === 'u') m.textContent = html; else m.innerHTML = html;
+    log.appendChild(m); log.scrollTop = log.scrollHeight; return m;
+  }
+  function botSay(html, after) {
+    const t = add('<span class="msg-typing" aria-label="Typing"><i></i><i></i><i></i></span>', 'b');
+    t.style.padding = '0';
+    setTimeout(() => { t.style.padding = ''; t.innerHTML = html; if (after) after(t); log.scrollTop = log.scrollHeight; }, reduce ? 0 : Math.min(1000, 380 + html.length * .6));
+  }
+  const chipBtn = f => { const b = d.createElement('button'); b.type = 'button'; b.textContent = f.chip; b.addEventListener('click', () => askChip(f)); return b; };
+  // (1) premade chips: the full set lives in the scrolling row under the conversation
+  FAQ.filter(f => f.chip).forEach(f => chips.appendChild(chipBtn(f)));
+  // the most-asked ones are laid out up front in the welcome message
+  const FRONT = ['what', 'who', 'industry', 'tiers', 'process', 'fast', 'start', 'call', 'price', 'ai', 'creators', 'own'];
+  function askChip(f) { add(f.chip, 'u'); botSay(withNudge(f.a)); }           // fixed answer, no guessing
+  function ask(q) { q = q.trim(); if (!q) return; add(q, 'u'); botSay(answer(q)); }   // (2) keyword match, (3) fallback
+
+  function open() {
+    chat.classList.add('open', 'seen'); panel.hidden = false; launch.setAttribute('aria-expanded', 'true'); launch.setAttribute('aria-label', 'Close chat');
+    hideTeaser(true);
+    if (!started) {
+      started = true;
+      botSay('<p>Hi, I am the Oravini assistant. Pick a question below or type your own, and I will answer from what we actually do.</p><div class="chip-grid" role="group" aria-label="Common questions"></div>', m => {
+        const g = m.querySelector('.chip-grid'); FRONT.forEach(id => g.appendChild(chipBtn(byId[id])));
+      });
+    }
+    setTimeout(() => input.focus(), 30);
+  }
+  function close(returnFocus) {
+    chat.classList.remove('open'); panel.hidden = true; launch.setAttribute('aria-expanded', 'false'); launch.setAttribute('aria-label', 'Open chat with the Oravini assistant');
+    if (returnFocus) launch.focus();
+  }
+  launch.addEventListener('click', () => (panel.hidden ? open() : close(true)));
+  closeBtn.addEventListener('click', () => close(true));
+  form.addEventListener('submit', e => { e.preventDefault(); const q = input.value; input.value = ''; ask(q); });
+  d.addEventListener('keydown', e => { if (e.key === 'Escape' && !panel.hidden) close(true); });
+
+  // teaser: one gentle nudge per visit, a few seconds in
+  function hideTeaser(remember) { teaser.hidden = true; if (remember) ss.set('oravini-chat-teased', '1'); }
+  $('#chatTeaserX').addEventListener('click', () => hideTeaser(true));
+  teaser.addEventListener('click', e => { if (e.target.tagName !== 'BUTTON') open(); });
+
+  // never sit on top of the hero promise strip text: tuck the launcher (and any teaser) away while text passes under it
+  const strip = $('#strip'), stripText = strip ? Array.from(strip.querySelectorAll('li > span, li > svg')) : [];
+  let tickQ = false, teaserDue = false;
+  const stripRow = strip ? strip.querySelector('ul') : null;
+  // only text actually visible in the (horizontally scrollable) strip row counts
+  const overlaps = (b) => { const v = stripRow.getBoundingClientRect(); return stripText.some(li => { const r = li.getBoundingClientRect();
+    const L = Math.max(r.left, v.left), R = Math.min(r.right, v.right); if (R - L < 2) return false;
+    return !(r.bottom <= b.t || r.top >= b.b || R <= b.l || L >= b.r); }); };
+  function bands() {
+    const cs = getComputedStyle(chat), size = launch.offsetHeight || 54;
+    const lb = innerHeight - parseFloat(cs.bottom), lr = innerWidth - parseFloat(cs.right);
+    return { launcher: { t: lb - size - 140, b: lb + 140, l: lr - size - 10, r: lr + 10 },
+             teaser: { t: lb - size - 12 - 90, b: lb - size + 12, l: lr - Math.min(260, innerWidth - 32), r: lr } };
+  }
+  function checkTuck() {
+    tickQ = false; if (!stripText.length) return;
+    const B = bands();
+    chat.classList.toggle('tucked', overlaps(B.launcher));
+    if (!teaser.hidden && overlaps(B.teaser)) hideTeaser(true);
+    if (teaserDue && panel.hidden && !chat.classList.contains('tucked') && !overlaps(B.teaser)) {
+      teaserDue = false; teaser.hidden = false; setTimeout(() => hideTeaser(true), 12000);
+    }
+  }
+  const q = () => { if (!tickQ) { tickQ = true; requestAnimationFrame(checkTuck); } };
+  addEventListener('scroll', q, { passive: true }); addEventListener('resize', q, { passive: true });
+  if (!ss.get('oravini-chat-teased')) setTimeout(() => { teaserDue = true; checkTuck(); }, 7000);
+  checkTuck(); setTimeout(checkTuck, 1500);
 })();
 </script>
 </body>
