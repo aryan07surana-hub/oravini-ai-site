@@ -1321,7 +1321,21 @@ main{position:relative;z-index:2;overflow-x:clip}
   // explainer scene anchors (absolute cards placed on their start slots)
   const s1Pipe = $('#s1Pipe'), s1Card = $('#s1Card'), pslots = $$('.pslot', s1Pipe);
   const s2Grid = $('#s2Grid'), tasks = $$('.task', s2Grid), todo = $$('#s2Todo .s2-slot'), done = $$('#s2Done .s2-slot'), gate = $('#s2Gate');
+  // day scene: on phones, pair each BEFORE row with its AFTER row at the taller of the two heights,
+  // so the sweep line always crosses aligned rows. Desktop keeps its natural heights.
+  const dayBefore = $$('.s5-before .s5-list li'), dayAfter = $$('.s5-after .s5-list li');
+  const dayMobile = matchMedia('(max-width: 899px)');
+  function equalizeDay() {
+    [...dayBefore, ...dayAfter].forEach(li => { li.style.minHeight = ''; });
+    if (!dayMobile.matches) return;
+    dayBefore.forEach((b, i) => {
+      const a = dayAfter[i]; if (!a) return;
+      const h = Math.max(b.offsetHeight, a.offsetHeight) + 'px';
+      b.style.minHeight = h; a.style.minHeight = h;
+    });
+  }
   function placeScenes() {
+    equalizeDay();
     const p0 = offsetIn(pslots[0], s1Pipe);
     Object.assign(s1Card.style, { left: p0.x + 'px', top: p0.y + 'px', width: p0.w + 'px' });
     tasks.forEach((t, i) => { const r = offsetIn(todo[i], s2Grid); Object.assign(t.style, { left: r.x + 'px', top: r.y + 'px', width: r.w + 'px' }); });
