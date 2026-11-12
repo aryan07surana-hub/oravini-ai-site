@@ -125,7 +125,7 @@ p,li{text-wrap:pretty}
 /* =====================================================================
    NAV (floating pill, section-aware) + dot rail
    ===================================================================== */
-.nav{position:fixed;left:0;right:0;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px var(--gut);pointer-events:none;transition:padding .5s var(--ease)}
+.nav{position:fixed;left:0;right:0;top:0;z-index:90;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px var(--gut);pointer-events:none;transition:padding .5s var(--ease)}
 .nav>*{pointer-events:auto}
 .nav.scrolled{padding-top:12px;padding-bottom:12px}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:500;font-size:1.06rem;letter-spacing:-.01em;white-space:nowrap;transition:background-color .5s,border-color .5s,padding .5s var(--ease);border:1px solid transparent;border-radius:999px}
@@ -163,7 +163,8 @@ main{position:relative;z-index:2;overflow-x:clip}
    ===================================================================== */
 .s-block{display:grid;gap:clamp(26px,4vh,40px);margin-top:clamp(70px,12vh,130px)}
 .s-intro{display:grid;gap:16px;max-width:760px}
-.scene{padding:clamp(18px,2.4vw,30px);border-radius:28px;overflow:hidden}
+.scene{padding:clamp(18px,2.4vw,30px);border-radius:28px;overflow:hidden;scroll-margin-top:110px}
+.section,.why,.process,.hero{scroll-margin-top:90px}
 .scene-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-bottom:clamp(16px,2.4vh,24px)}
 .pane{position:relative;padding:16px;border-radius:18px;background:rgba(10,16,36,.38);border:1px solid rgba(255,255,255,.09);overflow:hidden}
 .pane>.label{margin-bottom:12px}
@@ -249,12 +250,10 @@ main{position:relative;z-index:2;overflow-x:clip}
 .clock .hand{height:15px;background:var(--cream);animation:spin 3s linear infinite}
 .clock .hour{height:10px;background:var(--coral-2);animation:spin 36s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.belt{display:grid;gap:10px;width:100%;transform:rotate(-6deg) scale(1.1)}
-.belt div{display:flex;gap:10px;width:max-content;animation:belt 16s linear infinite}
-.belt div:nth-child(2){animation-duration:22s;animation-direction:reverse}
-.belt div:nth-child(3){animation-duration:19s}
-.belt span{padding:8px 14px;border-radius:999px;font-size:.78rem;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12);color:var(--cream-2);white-space:nowrap}
-@keyframes belt{to{transform:translateX(-50%)}}
+.illo-chips{height:auto;min-height:clamp(200px,28vh,250px)}
+.belt{display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:8px;width:100%;height:100%;padding:44px 22px 16px 16px;box-sizing:border-box;overflow:hidden}
+.belt span{padding:7px 13px;border-radius:999px;font-size:.76rem;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12);color:var(--cream-2);white-space:nowrap;animation:busy 6.5s ease-in-out infinite;animation-delay:calc(var(--k) * -.5s)}
+@keyframes busy{0%,70%,100%{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.12);color:var(--cream-2);transform:none}78%{background:rgba(255,111,85,.22);border-color:rgba(255,144,113,.55);color:var(--cream);transform:translateY(-2px)}}
 .sheet{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;width:78%;position:relative}
 .sheet i{height:16px;border-radius:4px;background:rgba(255,255,255,.08)}
 .sheet i:nth-child(5n+2){background:rgba(255,255,255,.14)}
@@ -340,7 +339,7 @@ main{position:relative;z-index:2;overflow-x:clip}
 .s1-steps li{font-size:.66rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--cream)}
 .s1-steps::after{content:'';position:absolute;left:0;right:0;bottom:0;height:1px;background:rgba(255,255,255,.14)}
 .s1-fill{position:absolute;left:0;right:0;bottom:0;height:2px;z-index:1;background:var(--coral);box-shadow:0 0 10px var(--coral-glow);transform-origin:left;transform:scaleX(0)}
-@media(max-width:640px){.s1-steps li{font-size:.56rem;letter-spacing:.06em}}
+@media(max-width:640px){.s1-steps{display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;white-space:nowrap;-webkit-overflow-scrolling:touch}.s1-steps::-webkit-scrollbar{display:none}.s1-steps li{flex:none;font-size:.6rem;letter-spacing:.1em}}
 .s1-grid{display:grid;gap:12px}
 @media(min-width:860px){.s1-grid{grid-template-columns:1fr 1.15fr 1fr}}
 .chan{display:flex;gap:6px;margin-bottom:12px}
@@ -630,11 +629,11 @@ main{position:relative;z-index:2;overflow-x:clip}
 .phone{position:relative;flex:none;width:122px;height:236px;border-radius:26px;padding:7px;background:linear-gradient(160deg,#3a4566,#121a33 55%,#0b1226);box-shadow:0 30px 50px -20px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.25),inset 0 0 0 1px rgba(255,255,255,.08);animation:ringShake 12s ease-in-out infinite}
 .phone .notch{position:absolute;left:50%;top:12px;width:34px;height:8px;margin-left:-17px;border-radius:8px;background:#05080f;z-index:3}
 .ph-screen{position:relative;height:100%;border-radius:20px;overflow:hidden;background:radial-gradient(ellipse 120% 70% at 50% 0%,rgba(255,140,110,.35),transparent 60%),linear-gradient(180deg,#1b2747,#0e1730)}
-.ph-state{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;padding:30px 9px 12px;text-align:center}
+.ph-state{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;padding:28px 7px 10px;text-align:center;overflow:hidden}
 .st-ring{animation:sg0_28 12s linear infinite}
 .st-missed{opacity:0;justify-content:center;gap:6px;animation:sg30_46 12s linear infinite}
-.st-ai{opacity:0;gap:6px;animation:sg48_96 12s linear infinite}
-.ph-label{margin:0 0 10px;font-size:.52rem;letter-spacing:.16em;text-transform:uppercase;color:var(--cream-2)}
+.st-ai{opacity:0;gap:5px;animation:sg48_96 12s linear infinite}
+.scard .ph-label{margin:0 0 8px;max-width:100%;font-size:.46rem;line-height:1.3;letter-spacing:.08em;text-transform:uppercase;color:var(--cream-2);white-space:normal;overflow-wrap:anywhere}
 .ph-av{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;font-size:.8rem;font-weight:500;color:#2a1a18;background:linear-gradient(160deg,#ffd9c9,#ff9a7c);box-shadow:0 0 0 6px rgba(255,144,113,.15)}
 .ph-av.sm{width:30px;height:30px;font-size:.66rem;box-shadow:none}
 .ph-name{display:block;margin-top:8px;font-size:.78rem;font-weight:500}
@@ -644,14 +643,14 @@ main{position:relative;z-index:2;overflow-x:clip}
 .ph-btns i.yes{background:#4fc483}
 .ph-btns i.yes::after{content:'';position:absolute;inset:0;border-radius:50%;border:1.5px solid #4fc483;animation:ripple 1.4s ease-out infinite}
 .ph-badge{padding:4px 9px;border-radius:999px;font-size:.58rem;font-weight:500;color:#fff;background:#e2554a}
-.wave{display:flex;align-items:center;gap:2px;height:22px;margin-bottom:4px}
+.wave{display:flex;align-items:center;gap:2px;height:16px;margin-bottom:2px;flex:none}
 .wave i{width:3px;height:100%;border-radius:2px;background:var(--coral-2);transform-origin:center;animation:wave 1s ease-in-out infinite}
 .wave i:nth-child(2n){animation-delay:-.3s}.wave i:nth-child(3n){animation-delay:-.6s}.wave i:nth-child(4n){animation-delay:-.15s}
 @keyframes wave{0%,100%{transform:scaleY(.25)}50%{transform:scaleY(1)}}
-.ph-bub{margin:0;max-width:96%;padding:5px 7px;border-radius:9px 9px 9px 3px;font-size:.54rem;line-height:1.3;text-align:left;align-self:flex-start;background:rgba(255,255,255,.12)}
-.ph-bub.me{align-self:flex-end;border-radius:9px 9px 3px 9px;background:rgba(255,111,85,.55)}
+.scard .ph-bub{margin:0;max-width:100%;box-sizing:border-box;padding:4px 6px;border-radius:8px 8px 8px 3px;font-size:.5rem;line-height:1.28;overflow-wrap:anywhere;text-align:left;align-self:flex-start;background:rgba(255,255,255,.12)}
+.scard .ph-bub.me{align-self:flex-end;border-radius:9px 9px 3px 9px;background:rgba(255,111,85,.55)}
 .ph-bub.b1{animation:in56 12s linear infinite}.ph-bub.b2{animation:in66 12s linear infinite}
-.ph-chip{margin-top:auto;padding:4px 8px;border-radius:999px;font-size:.54rem;font-weight:500;color:#fff4ee;background:linear-gradient(180deg,#ff8466,#f2604b);animation:in76 12s linear infinite}
+.ph-chip{margin-top:auto;max-width:100%;padding:4px 8px;border-radius:999px;font-size:.5rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500;color:#fff4ee;background:linear-gradient(180deg,#ff8466,#f2604b);animation:in76 12s linear infinite}
 @keyframes ringShake{0%,28%,100%{transform:none}2%,10%,18%{transform:rotate(-4deg)}4%,12%,20%{transform:rotate(4deg)}6%,14%,22%{transform:rotate(-2deg)}8%,16%,24%{transform:none}}
 .call-log{display:grid;gap:7px;min-width:150px}
 .call-log .label{margin-bottom:4px}
@@ -670,7 +669,7 @@ main{position:relative;z-index:2;overflow-x:clip}
 .th-status .s1{color:var(--coral-2);animation:sg0_30 11s linear infinite}
 .th-status .s2{opacity:0;color:var(--cream-3);animation:sg30_62 11s linear infinite}
 .th-status .s3{opacity:0;color:#e2554a;animation:sg62_96 11s linear infinite}
-.th-msg{margin:0;max-width:88%;padding:7px 10px;border-radius:12px 12px 12px 4px;font-size:.76rem;line-height:1.35;background:rgba(255,255,255,.11)}
+.scard .th-msg{margin:0;max-width:88%;padding:7px 10px;border-radius:12px 12px 12px 4px;font-size:.76rem;line-height:1.35;background:rgba(255,255,255,.11)}
 .th-msg.m1{animation:in5 11s linear infinite}.th-msg.m2{animation:in30 11s linear infinite}.th-msg.m3{animation:in62 11s linear infinite}
 .th-lost{justify-self:end;padding:4px 10px;border-radius:999px;font-size:.68rem;font-weight:500;color:#fff;background:#e2554a;animation:in74 11s linear infinite}
 .illo-wait .clock{right:16px;bottom:14px}
@@ -694,7 +693,10 @@ main{position:relative;z-index:2;overflow-x:clip}
 /* self-playing scenes */
 .s-live{display:inline-flex;align-items:center;gap:8px}
 .s-live .live{display:inline-block}
-.pay-toast{position:absolute;right:clamp(14px,2vw,26px);top:clamp(14px,2vw,22px);z-index:5;display:flex;align-items:center;gap:12px;padding:12px 16px 12px 12px;border-radius:16px;background:linear-gradient(160deg,rgba(255,150,120,.95),rgba(242,96,75,.92));color:#fff8f2;box-shadow:0 24px 50px -18px rgba(255,111,85,.8),inset 0 1px 0 rgba(255,255,255,.35)}
+.pay-slot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:14px 24px;min-height:62px;margin-top:clamp(14px,2.2vh,20px)}
+.pay-slot .s-out{margin:0;flex:1 1 320px}
+.pay-slot .pay-toast{margin-left:auto}
+.pay-toast{position:relative;z-index:1;display:flex;align-items:center;gap:12px;padding:12px 16px 12px 12px;border-radius:16px;background:linear-gradient(160deg,rgba(255,150,120,.95),rgba(242,96,75,.92));color:#fff8f2;box-shadow:0 24px 50px -18px rgba(255,111,85,.8),inset 0 1px 0 rgba(255,255,255,.35)}
 .pay-toast .coin{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.45)}
 .pay-toast .coin .ico{width:17px;height:17px}
 .pay-toast b{display:block;font-size:.9rem;font-weight:500}
@@ -914,7 +916,7 @@ main{position:relative;z-index:2;overflow-x:clip}
         <span class="dim"></span>
         <div><p class="label">Leak · Calls</p><h3>Calls ring out.</h3><p>The client you wanted dials the next name on the list.</p>
           <p class="fix"><b>The fix</b>An AI receptionist that answers every call, qualifies it and books it.</p></div>
-        <div class="illo illo-call" aria-hidden="true"><div class="phone"><span class="notch"></span><div class="ph-screen"><div class="ph-state st-ring"><p class="ph-label">Incoming call</p><span class="ph-av">NE</span><b class="ph-name">New enquiry</b><small>Mobile</small><div class="ph-btns"><i></i><i class="yes"></i></div></div><div class="ph-state st-missed"><span class="ph-badge">Missed call</span><b class="ph-name">New enquiry</b><small>No voicemail left</small></div><div class="ph-state st-ai"><p class="ph-label">AI receptionist · live</p><div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><p class="ph-bub b1">Thanks for calling. How can I help today?</p><p class="ph-bub me b2">I would like to book a consultation.</p><span class="ph-chip">Qualified · Booked Thursday</span></div></div></div><div class="call-log"><p class="label">Call log</p><span class="cl"><b></b>Ringing</span><span class="cl"><b></b>Missed</span><span class="cl"><b></b>AI receptionist answers</span><span class="cl"><b></b>Qualified and booked</span></div></div>
+        <div class="illo illo-call" aria-hidden="true"><div class="phone"><span class="notch"></span><div class="ph-screen"><div class="ph-state st-ring"><p class="ph-label">Incoming call</p><span class="ph-av">NE</span><b class="ph-name">New enquiry</b><small>Mobile</small><div class="ph-btns"><i></i><i class="yes"></i></div></div><div class="ph-state st-missed"><span class="ph-badge">Missed call</span><b class="ph-name">New enquiry</b><small>No voicemail left</small></div><div class="ph-state st-ai"><p class="ph-label">AI receptionist</p><div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><p class="ph-bub b1">Thanks for calling. How can I help?</p><p class="ph-bub me b2">I would like a consultation.</p><span class="ph-chip">Booked · Thursday</span></div></div></div><div class="call-log"><p class="label">Call log</p><span class="cl"><b></b>Ringing</span><span class="cl"><b></b>Missed</span><span class="cl"><b></b>AI receptionist answers</span><span class="cl"><b></b>Qualified and booked</span></div></div>
       </article>
       <article class="glass scard">
         <span class="dim"></span>
@@ -926,12 +928,8 @@ main{position:relative;z-index:2;overflow-x:clip}
         <span class="dim"></span>
         <div><p class="label">Leak · Attention</p><h3>Your best people do admin.</h3><p>Talent you pay for spends its day on work a machine does better.</p>
           <p class="fix"><b>The fix</b>An AI back office that takes the busywork off their desks.</p></div>
-        <div class="illo" aria-hidden="true"><span class="tag">Manual work</span>
-          <div class="belt" id="belt">
-            <div><span>Copy</span><span>Paste</span><span>Chase</span><span>Update</span><span>Re-type</span><span>Copy</span><span>Paste</span><span>Chase</span><span>Update</span><span>Re-type</span></div>
-            <div><span>Reply</span><span>Remind</span><span>Schedule</span><span>Report</span><span>Reply</span><span>Remind</span><span>Schedule</span><span>Report</span></div>
-            <div><span>Follow up</span><span>Log it</span><span>Check</span><span>Repeat</span><span>Follow up</span><span>Log it</span><span>Check</span><span>Repeat</span></div>
-          </div>
+        <div class="illo illo-chips" aria-hidden="true"><span class="tag">Manual work</span>
+          <div class="belt" id="belt"><span style="--k:0">Copy</span><span style="--k:1">Paste</span><span style="--k:2">Chase</span><span style="--k:3">Update</span><span style="--k:4">Re-type</span><span style="--k:5">Reply</span><span style="--k:6">Remind</span><span style="--k:7">Schedule</span><span style="--k:8">Report</span><span style="--k:9">Follow up</span><span style="--k:10">Log it</span><span style="--k:11">Check</span><span style="--k:12">Repeat</span></div>
         </div>
       </article>
       <article class="glass scard">
@@ -1041,7 +1039,6 @@ main{position:relative;z-index:2;overflow-x:clip}
     </div>
     <div class="glass scene" id="s1">
       <div class="scene-head"><p class="label s-live"><span class="live"></span>Live system · plays on its own</p><span class="step-tag"><svg class="ico"><use href="#i-temple"/></svg>Step 1 · Automate your ops</span></div>
-      <div class="pay-toast" id="s1Pay" aria-hidden="true"><span class="coin"><svg class="ico"><use href="#i-check"/></svg></span><div><b>Payment received</b><small>Consultation paid in full</small></div></div>
       <ol class="s1-steps"><li>Arrives</li><li>AI replies</li><li>Booked</li><li>CRM updated</li><li>Paid</li><span class="s1-fill" id="s1Fill"></span></ol>
       <div class="s1-grid">
         <div class="pane"><p class="label">Inbound</p>
@@ -1075,6 +1072,7 @@ main{position:relative;z-index:2;overflow-x:clip}
         <div class="pcol"><p class="label">Paid</p><span class="pslot"></span><span class="ghost"></span></div>
         <div class="pcard" id="s1Card"><b>New enquiry</b><small>Consultation · Thursday</small></div>
       </div>
+      <div class="pay-slot"><div class="pay-toast" id="s1Pay" aria-hidden="true"><span class="coin"><svg class="ico"><use href="#i-check"/></svg></span><div><b>Payment received</b><small>Consultation paid in full</small></div></div></div>
     </div>
   </div>
   <div class="wrap">
@@ -1152,8 +1150,8 @@ main{position:relative;z-index:2;overflow-x:clip}
           <div class="pane d-pipe"><p class="label">Pipeline</p><div class="pcols"><div><i></i><i class="pmove"></i></div><div><i></i></div><div><i></i><i></i><i class="parr"></i></div></div></div>
           <div class="pane d-inbox d-tasks"><p class="label">AI at work</p><div class="trow"><span class="tk"></span><b>Follow-ups sent</b><em><span class="q">Queued</span><span class="dn">Done</span></em></div><div class="trow"><span class="tk"></span><b>Invoices issued</b><em><span class="q">Queued</span><span class="dn">Done</span></em></div><div class="trow"><span class="tk"></span><b>Weekly report compiled</b><em><span class="q">Queued</span><span class="dn">Done</span></em></div></div>
         </div>
-        <p class="s-out" id="s4Out">Yours outright. Your data, your platform, an AI layer on top that does the work.</p>
-        <div class="pay-toast" id="s4Pay" aria-hidden="true"><span class="coin"><svg class="ico"><use href="#i-check"/></svg></span><div><b>Payment received</b><small>Invoice settled automatically</small></div></div>
+        <div class="pay-slot"><p class="s-out" id="s4Out">Yours outright. Your data, your platform, an AI layer on top that does the work.</p>
+        <div class="pay-toast" id="s4Pay" aria-hidden="true"><span class="coin"><svg class="ico"><use href="#i-check"/></svg></span><div><b>Payment received</b><small>Invoice settled automatically</small></div></div></div>
       </div>
     </div>
 
