@@ -210,9 +210,9 @@ main{position:relative;z-index:2;overflow-x:clip}
 .strip-bar i{display:block;height:100%;background:var(--coral);box-shadow:0 0 10px var(--coral-glow);transform-origin:left;transform:scaleX(0)}
 .strip-bar i.run{animation:fill 3.6s linear forwards}
 @keyframes fill{to{transform:scaleX(1)}}
-/* left clearance for the fixed Sound pill (left edge clamp(12px,2vw,24px), about 104px wide incl. state change);
+/* left clearance for the fixed Sound pill (left edge clamp(12px,2vw,24px), about 124px wide at its widest, 'Tap for sound');
    it shrinks to zero once the strip already starts clear of the pill. A margin, so swiped text can never slide under it. */
-.strip ul{list-style:none;margin:0 0 0 max(0px, calc(clamp(12px, 2vw, 24px) + 104px + 14px - (100vw - min(1280px, 100vw - 2 * var(--gut))) / 2 - 18px));padding:0 18px;display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));overflow-x:auto;scrollbar-width:none}
+.strip ul{list-style:none;margin:0 0 0 max(0px, calc(clamp(12px, 2vw, 24px) + 124px + 14px - (100vw - min(1280px, 100vw - 2 * var(--gut))) / 2 - 18px));padding:0 18px;display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));overflow-x:auto;scrollbar-width:none}
 .strip ul::-webkit-scrollbar{display:none}
 .strip li{display:flex;flex-direction:column;gap:10px;padding:20px 18px 24px 0;font-size:.86rem;font-weight:500;line-height:1.35;color:var(--cream);text-shadow:0 1px 10px rgba(5,9,22,.6);transition:color .6s}
 .strip li.on{color:var(--coral-2)}
@@ -771,6 +771,8 @@ main{position:relative;z-index:2;overflow-x:clip}
 /* sound toggle */
 .sound{position:fixed;left:clamp(12px,2vw,24px);bottom:clamp(12px,2vw,22px);z-index:65;display:inline-flex;align-items:center;gap:8px;padding:9px 13px 9px 11px;border-radius:999px;font:500 .74rem/1 'Inter Tight',sans-serif;color:var(--cream-2);background:rgba(14,24,48,.55);border:1px solid rgba(255,255,255,.14);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);cursor:pointer;transition:color .3s,border-color .3s}
 .sound:hover{color:var(--cream);border-color:rgba(255,144,113,.5)}
+.sound.invite{color:var(--cream);border-color:rgba(255,144,113,.6);animation:soundInvite 2.2s ease-out infinite}
+@keyframes soundInvite{0%{box-shadow:0 0 0 0 rgba(255,111,85,.45)}70%,100%{box-shadow:0 0 0 10px rgba(255,111,85,0)}}
 .sound svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .sound .sl{display:none}
 .sound.off .wv{display:none}.sound.off .sl{display:inline}
@@ -891,7 +893,7 @@ main{position:relative;z-index:2;overflow-x:clip}
   <a href="#contact" aria-label="Book a call"></a>
 </nav>
 
-<button class="sound" id="soundBtn" type="button" aria-pressed="true" aria-label="Toggle sound effects"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5v5h3.5l4.5 4V5.5L7.5 9.5H4Z"/><path class="wv" d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11"/><path class="sl" d="m16 9.5 5 5M21 9.5l-5 5"/></svg><span>Sound on</span></button>
+<button class="sound" id="soundBtn" type="button" aria-pressed="true" aria-label="Toggle sound effects"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5v5h3.5l4.5 4V5.5L7.5 9.5H4Z"/><path class="wv" d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11"/><path class="sl" d="m16 9.5 5 5M21 9.5l-5 5"/></svg><span>Tap for sound</span></button>
 
 <main id="main">
 
@@ -1565,10 +1567,70 @@ main{position:relative;z-index:2;overflow-x:clip}
      SHARED SOUND: synthesised cha-ching, unlocked by the first gesture
      ================================================================ */
   const Sound = (() => {
-    let ctx = null, master = null, muted = false;
+    let ctx = null, master = null, muted = false, unlocked = false;
     try { muted = localStorage.getItem('oravini-sound') === 'off'; } catch (e) {}
     const btn = $('#soundBtn');
-    const render = () => { btn.classList.toggle('off', muted); btn.setAttribute('aria-pressed', String(!muted)); $('span', btn).textContent = muted ? 'Sound off' : 'Sound on'; };
+    // before the first gesture the pill invites a tap; afterwards it settles into on/off
+    const render = () => {
+      const invite = !muted && !unlocked;
+      btn.classList.toggle('off', muted); btn.classList.toggle('invite', invite);
+      btn.setAttribute('aria-pressed', String(!muted));
+      $('span', btn).textContent = muted ? 'Sound off' : invite ? 'Tap for sound' : 'Sound on';
+    };
+
+    /* ---- ambient pad: warm major chord, 3 detuned sines per note, each note breathing on a slow LFO ---- */
+    const PAD_NOTES = [130.81, 196, 261.63, 329.63, 392, 493.88];   // C3 G3 C4 E4 G4 B4
+    const PAD_LEVEL = .05, PAD_FADE_IN = 4;
+    let pad = null, hideTimer = 0;
+    function startPad() {
+      if (pad || muted || !ctx || ctx.state !== 'running') return;
+      const t0 = ctx.currentTime;
+      const bus = ctx.createGain(), lp = ctx.createBiquadFilter();
+      bus.gain.setValueAtTime(0, t0); bus.gain.linearRampToValueAtTime(PAD_LEVEL, t0 + PAD_FADE_IN);
+      lp.type = 'lowpass'; lp.frequency.value = 1800; lp.Q.value = .3;
+      bus.connect(lp); lp.connect(master);
+      const oscs = [];
+      try {
+      PAD_NOTES.forEach((f, i) => {
+        const note = ctx.createGain(), base = .55 / (1 + i * .35);          // upper notes sit softer
+        note.gain.value = base;
+        const lfo = ctx.createOscillator(), depth = ctx.createGain();       // ~0.07 Hz breathing, offset per note
+        lfo.frequency.value = .07 * (.86 + i * .055); depth.gain.value = base * .45;
+        lfo.connect(depth); depth.connect(note.gain); oscs.push(lfo); lfo.start(t0);
+        [-.003, 0, .003].forEach(dt => {                                     // three voices, detuned about +-0.3%
+          const o = ctx.createOscillator(), v = ctx.createGain();
+          o.type = 'sine'; o.frequency.value = f * (1 + dt); v.gain.value = 1 / 3;
+          o.connect(v); v.connect(note); o.start(t0); oscs.push(o);
+        });
+        note.connect(bus);
+      });
+      } catch (e) {                                                          // never leave half a chord running
+        oscs.forEach(o => { try { o.stop(); } catch (x) {} }); try { bus.disconnect(); } catch (x) {}
+        return;
+      }
+      pad = { bus, oscs, readyAt: t0 + PAD_FADE_IN };
+    }
+    function stopPad(fade) {
+      if (!pad || !ctx) return;
+      const p = pad, t = ctx.currentTime, f = fade == null ? .8 : fade; pad = null;
+      p.bus.gain.cancelScheduledValues(t); p.bus.gain.setValueAtTime(p.bus.gain.value, t); p.bus.gain.linearRampToValueAtTime(0, t + f);
+      p.oscs.forEach(o => { try { o.stop(t + f + .05); } catch (e) {} });
+      setTimeout(() => { try { p.bus.disconnect(); } catch (e) {} }, (f + .3) * 1000);
+    }
+    // sidechain-style dip so pops, ticks and the cha-ching always sit on top of the pad
+    function duck(depth) {
+      if (!pad || !ctx) return;
+      const g = pad.bus.gain, t = ctx.currentTime;
+      if (t < pad.readyAt) return;                                           // never interrupt the fade-in
+      g.cancelScheduledValues(t); g.setValueAtTime(g.value, t);
+      g.linearRampToValueAtTime(PAD_LEVEL * (depth == null ? .35 : depth), t + .03);
+      g.linearRampToValueAtTime(PAD_LEVEL, t + .9);
+    }
+    const afterRunning = fn => { if (!ctx) return; Promise.resolve(ctx.state === 'running' ? 0 : ctx.resume()).then(() => { if (ctx.state === 'running') fn(); }).catch(() => {}); };
+    function onUnlocked() {
+      if (!unlocked) { unlocked = true; render(); }
+      if (!muted && !d.hidden) startPad();
+    }
     // create AND resume synchronously inside the gesture (iOS needs both in the same handler)
     function ensure() {
       try {
@@ -1583,14 +1645,25 @@ main{position:relative;z-index:2;overflow-x:clip}
         if (ctx.state !== 'running') ctx.resume();
         const b = ctx.createBuffer(1, 1, 22050), src = ctx.createBufferSource(); // silent one-sample kick to open the output on iOS
         src.buffer = b; src.connect(ctx.destination); src.start(0);
+        afterRunning(onUnlocked);
       } catch (e) {}
     }
-    ['pointerdown', 'touchend', 'click', 'keydown'].forEach(ev => addEventListener(ev, ensure, { passive: true, capture: true }));
+    // tap/click/key unlock audio everywhere; wheel and touch-scroll also try (browsers may only honour them after a tap)
+    ['pointerdown', 'touchend', 'click', 'keydown', 'wheel', 'touchmove'].forEach(ev => addEventListener(ev, ensure, { passive: true, capture: true }));
     btn.addEventListener('click', () => {
+      // first tap on the inviting pill means "yes, sound": unlock without toggling it off
+      if (btn.classList.contains('invite')) { ensure(); return; }
       ensure(); muted = !muted;
       try { localStorage.setItem('oravini-sound', muted ? 'off' : 'on'); } catch (e) {}
       render();
-      if (!muted && ctx) Promise.resolve(ctx.resume()).then(() => chaChing(true));
+      if (muted) stopPad(.6);
+      else afterRunning(() => { startPad(); chaChing(true); });
+    });
+    // tab hidden for a while: fade the pad out and suspend the engine; bring it back on return
+    d.addEventListener('visibilitychange', () => {
+      clearTimeout(hideTimer);
+      if (d.hidden) hideTimer = setTimeout(() => { stopPad(.3); setTimeout(() => { try { if (ctx && d.hidden) ctx.suspend(); } catch (e) {} }, 500); }, 8000);
+      else if (unlocked && !muted) afterRunning(startPad);
     });
     render();
     const ready = () => !muted && ctx && ctx.state === 'running' && !d.hidden;
@@ -1608,7 +1681,7 @@ main{position:relative;z-index:2;overflow-x:clip}
     let lastCash = 0, lastTick = 0;
     function chaChing(force) {
       if (!ready()) return;
-      const now = performance.now(); if (!force && now - lastCash < 600) return; lastCash = now;
+      const now = performance.now(); if (!force && now - lastCash < 600) return; lastCash = now; duck(.3);
       const t0 = ctx.currentTime + .01, out = ctx.createGain(); out.gain.value = 1; out.connect(master);
       // drawer: a bright click and a low wooden thunk
       const n = noise(.05, 3), hp = ctx.createBiquadFilter(), ng = ctx.createGain();
@@ -1624,7 +1697,7 @@ main{position:relative;z-index:2;overflow-x:clip}
     }
     function tick() {
       if (!ready()) return;
-      const now = performance.now(); if (now - lastTick < 400) return; lastTick = now;
+      const now = performance.now(); if (now - lastTick < 400) return; lastTick = now; duck(.4);
       const t0 = ctx.currentTime + .01, out = ctx.createGain(); out.gain.value = .9; out.connect(master);
       // soft airy whoosh rising into the tick
       const n = noise(.32, 1.2), bp = ctx.createBiquadFilter(), g = ctx.createGain();
@@ -1635,7 +1708,29 @@ main{position:relative;z-index:2;overflow-x:clip}
       // crisp confirmation tick
       tone(out, t0, 2637, .26, .32, .18); tone(out, t0, 3951, .27, .14, .14); tone(out, t0, 1318, .26, .12, .22, 'triangle');
     }
-    return { chaChing, tick };
+    // scroll-reveal bubble pop: sine 300 -> 900 Hz in ~120 ms, fast decay, quiet.
+    // Consecutive pops step up in pitch like rising bubbles; throttled so fast scrolling never machine-guns.
+    let lastPop = 0, popStep = 0, popTimes = [];
+    const POP_GAP = 140, POP_CAP = 5, POP_STEPS = 5;
+    function pop() {
+      if (!ready()) return;
+      const now = performance.now();
+      if (now - lastPop < POP_GAP) return;
+      popTimes = popTimes.filter(t => now - t < 1000);
+      if (popTimes.length >= POP_CAP) return;
+      popStep = now - lastPop > 1500 ? 0 : (popStep + 1) % POP_STEPS;   // a pause restarts the climb
+      lastPop = now; popTimes.push(now); duck(.7);
+      const r = 1 + popStep * .09, t0 = ctx.currentTime + .005;
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = 'sine';
+      o.frequency.setValueAtTime(300 * r, t0);
+      o.frequency.exponentialRampToValueAtTime(900 * r, t0 + .09);
+      g.gain.setValueAtTime(0, t0);
+      g.gain.linearRampToValueAtTime(.12, t0 + .006);
+      g.gain.exponentialRampToValueAtTime(.0004, t0 + .12);
+      o.connect(g); g.connect(master); o.start(t0); o.stop(t0 + .14);
+    }
+    return { chaChing, tick, pop, startPad, stopPad };
   })();
 
   /* ---------- no motion library? leave a complete static page ---------- */
@@ -1728,26 +1823,29 @@ main{position:relative;z-index:2;overflow-x:clip}
   /* ================================================================
      6. SECTION REVEALS
      ================================================================ */
+  // reveal pops: play-once reveals pop once per element (onEnter only fires scrolling down)
+  const popped = new WeakSet();
+  const popOnce = el => { if (!el || popped.has(el)) return; popped.add(el); Sound.pop(); };
   if (!reduce) {
     splits.forEach((units, el) => {
       if (el.closest('.hero')) return;
       const chars = el.dataset.split === 'chars';
-      gsap.from(units, { yPercent: 118, rotate: chars ? 0 : 4, duration: chars ? 1.1 : 1.3, stagger: chars ? .022 : .06, scrollTrigger: { trigger: el, start: 'top 86%' } });
+      gsap.from(units, { yPercent: 118, rotate: chars ? 0 : 4, duration: chars ? 1.1 : 1.3, stagger: chars ? .022 : .06, scrollTrigger: { trigger: el, start: 'top 86%', onEnter: () => popOnce(el) } });
     });
     gsap.set('.fade', { opacity: 0, y: 34 });
-    ScrollTrigger.batch('.fade', { start: 'top 90%', once: true, onEnter: b => gsap.to(b, { opacity: 1, y: 0, duration: 1.2, stagger: .1, ease: 'power3.out', overwrite: true }) });
+    ScrollTrigger.batch('.fade', { start: 'top 90%', once: true, onEnter: b => { popOnce(b[0]); gsap.to(b, { opacity: 1, y: 0, duration: 1.2, stagger: .1, ease: 'power3.out', overwrite: true }); } });
     gsap.fromTo(statement, { clipPath: 'inset(-10% 100% -20% 0)' }, { clipPath: 'inset(-10% 0% -20% 0)', ease: 'none', scrollTrigger: { trigger: statement, start: 'top 88%', end: 'top 50%', scrub: 1 } });
     gsap.set(stWords, { opacity: .16 });
     gsap.to(stWords, { opacity: 1, color: (i, el) => el.dataset.hot ? '#ff9071' : '#f3ece2', stagger: .1, ease: 'none', scrollTrigger: { trigger: statement, start: 'top 75%', end: 'bottom 45%', scrub: true } });
     gsap.fromTo('.wipe-final', { clipPath: 'inset(-10% 100% -20% 0)' }, { clipPath: 'inset(-10% 0% -20% 0)', duration: 1.8, ease: 'power4.inOut', scrollTrigger: { trigger: '.wipe-final', start: 'top 85%' } });
     const fillEl = $('[data-fill]'), fillUnits = splits.get(fillEl);
     gsap.to(fillUnits, { color: i => accentAt(i / (fillUnits.length - 1)), stagger: .5, ease: 'none', scrollTrigger: { trigger: fillEl, start: 'top 75%', end: 'bottom 30%', scrub: true } });
-    gsap.from('.arc-step', { opacity: 0, y: 40, scale: .97, stagger: .12, duration: 1.2, scrollTrigger: { trigger: '#arc', start: 'top 85%' } });
+    gsap.from('.arc-step', { opacity: 0, y: 40, scale: .97, stagger: .12, duration: 1.2, scrollTrigger: { trigger: '#arc', start: 'top 85%', onEnter: () => popOnce($('#arc')) } });
     $$('.tier').forEach(t => {
-      gsap.from($('.tcard', t), { opacity: 0, y: 90, rotationX: -16, transformPerspective: 1200, transformOrigin: '50% 0%', duration: 1.4, scrollTrigger: { trigger: t, start: 'top 88%' } });
+      gsap.from($('.tcard', t), { opacity: 0, y: 90, rotationX: -16, transformPerspective: 1200, transformOrigin: '50% 0%', duration: 1.4, scrollTrigger: { trigger: t, start: 'top 88%', onEnter: () => popOnce(t) } });
       gsap.from($$('.chips li', t), { opacity: 0, y: 12, scale: .95, stagger: .045, duration: .9, delay: .3, scrollTrigger: { trigger: t, start: 'top 82%' } });
     });
-    $$('.scene').forEach(sc => gsap.from(sc, { opacity: 0, y: 60, scale: .97, duration: 1.4, scrollTrigger: { trigger: sc, start: 'top 92%' } }));
+    $$('.scene').forEach(sc => gsap.from(sc, { opacity: 0, y: 60, scale: .97, duration: 1.4, scrollTrigger: { trigger: sc, start: 'top 92%', onEnter: () => popOnce(sc) } }));
     gsap.to('#agenda', { y: -10, duration: 3.5, ease: 'sine.inOut', yoyo: true, repeat: -1 });
     $$('.count').forEach(el => {
       const n = +el.dataset.n, o = { v: 0 }; el.textContent = '00';
@@ -1971,7 +2069,7 @@ main{position:relative;z-index:2;overflow-x:clip}
      10. RESPONSIVE MOTION (gsap.matchMedia, successor to ScrollTrigger.matchMedia)
      ================================================================ */
   // promise stamps: pop in (and check themselves) as their scene arrives
-  const stampOn = el => ScrollTrigger.create({ trigger: el, start: 'top 86%', onEnter: () => el.classList.add('in'), onLeaveBack: () => el.classList.remove('in') });
+  const stampOn = el => ScrollTrigger.create({ trigger: el, start: 'top 86%', onEnter: () => { el.classList.add('in'); Sound.pop(); }, onLeaveBack: () => el.classList.remove('in') });
   if (reduce) $$('.promise').forEach(p => p.classList.add('in'));
   else $$('.promise:not(.in-stack)').forEach(stampOn);
   const mm = gsap.matchMedia();
@@ -2042,7 +2140,7 @@ main{position:relative;z-index:2;overflow-x:clip}
         onUpdate: self => { hsFill.style.transform = `scaleX(${self.progress.toFixed(4)})`; } } });
     const activate = (s, i, on) => {
       s.classList.toggle('active', on); ticks[i].classList.toggle('on', on); hsNum.textContent = pad(on ? i + 1 : Math.max(1, i));
-      if (on) gsap.fromTo($('.step-ic', s), { scale: .4, rotate: -30 }, { scale: 1, rotate: 0, duration: .9, ease: 'back.out(2.6)', overwrite: true });
+      if (on) { Sound.pop(); gsap.fromTo($('.step-ic', s), { scale: .4, rotate: -30 }, { scale: 1, rotate: 0, duration: .9, ease: 'back.out(2.6)', overwrite: true }); }
     };
     steps.forEach((s, i) => ScrollTrigger.create({ trigger: s, containerAnimation: hTween, start: 'left 72%', onEnter: () => activate(s, i, true), onLeaveBack: () => activate(s, i, false) }));
 
@@ -2053,10 +2151,10 @@ main{position:relative;z-index:2;overflow-x:clip}
   });
 
   mm.add('(max-width: 767px) and (prefers-reduced-motion: no-preference)', () => {
-    $$('.scard').forEach((c, i) => gsap.from(c, { x: i % 2 ? 60 : -60, rotation: i % 2 ? 3 : -3, opacity: 0, duration: 1.3, scrollTrigger: { trigger: c, start: 'top 88%' } }));
-    $$('.ag-cell').forEach((c, i) => gsap.from(c, { y: 50, opacity: 0, duration: 1.1, delay: (i % 2) * .08, scrollTrigger: { trigger: c, start: 'top 90%' } }));
+    $$('.scard').forEach((c, i) => gsap.from(c, { x: i % 2 ? 60 : -60, rotation: i % 2 ? 3 : -3, opacity: 0, duration: 1.3, scrollTrigger: { trigger: c, start: 'top 88%', onEnter: () => popOnce(c) } }));
+    $$('.ag-cell').forEach((c, i) => gsap.from(c, { y: 50, opacity: 0, duration: 1.1, delay: (i % 2) * .08, scrollTrigger: { trigger: c, start: 'top 90%', onEnter: () => popOnce(c) } }));
     $$('.step').forEach(s => ScrollTrigger.create({ trigger: s, start: 'top 75%', once: true, onEnter: () => {
-      s.classList.add('active'); gsap.from(s, { y: 40, opacity: 0, duration: 1.1 });
+      s.classList.add('active'); popOnce(s); gsap.from(s, { y: 40, opacity: 0, duration: 1.1 });
       gsap.fromTo($('.step-ic', s), { scale: .4, rotate: -30 }, { scale: 1, rotate: 0, duration: .9, delay: .2, ease: 'back.out(2.6)' });
     } }));
     $$('.promise.in-stack').forEach(stampOn);
