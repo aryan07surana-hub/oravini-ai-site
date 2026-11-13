@@ -57,7 +57,7 @@ svg{display:block}
 .blob{position:absolute;left:0;top:0;width:110vmax;height:110vmax;margin:-55vmax 0 0 -55vmax;border-radius:50%;will-change:transform,opacity}
 .blob i{position:absolute;inset:0;border-radius:50%;animation:breathe 14s ease-in-out infinite alternate}
 .b-coral{transform:translate3d(66vw,32vh,0) scale(.95);opacity:.82}
-.b-coral i{background:radial-gradient(circle,rgba(255,118,88,.95) 0%,rgba(244,96,82,.55) 16%,rgba(200,80,90,.18) 36%,transparent 58%)}
+.b-coral i{background:radial-gradient(circle,rgba(255,128,92,1) 0%,rgba(255,108,78,.82) 20%,rgba(240,96,84,.4) 40%,transparent 64%)}
 .b-peach{transform:translate3d(28vw,72vh,0) scale(.8);opacity:.8}
 .b-peach i{background:radial-gradient(circle,rgba(255,176,138,.42) 0%,rgba(255,150,120,.14) 26%,transparent 50%);animation-duration:18s}
 .b-slate{transform:translate3d(88vw,18vh,0) scale(.9);opacity:.9}
@@ -1918,12 +1918,12 @@ main{position:relative;z-index:2;overflow-x:clip}
      8. SIGNATURE: one coral light gliding through the whole page
      ================================================================ */
   const PATH = [  // per section: [fraction of section, x vw, y vh, scale, opacity]
-    [[.25, 66, 32, .95, .82]],                          // hero: up and right, clear of the headline
-    [[.12, 24, 48, .92, .95], [.6, 14, 72, .86, .9], [.92, 36, 58, .95, .95]], // drifts left through the problem, under the funnel
+    [[.25, 66, 32, .95, .96]],                          // hero: up and right, clear of the headline
+    [[.12, 24, 48, .92, 1], [.6, 14, 72, .86, 1], [.92, 36, 58, .95, 1]], // drifts left through the problem, under the funnel
     [[.15, 66, 46, 1.05, 1], [.55, 72, 56, 1, 1], [.9, 50, 62, 1, 1]],          // behind the flow, then the CRM journey
-    [[.12, 10, 22, .78, .85], [.7, 9, 84, .78, .85], [.92, 40, 60, .9, .9]],     // down the offer rail
-    [[.12, 18, 60, .9, .92], [.88, 84, 58, .9, .92]],   // across the process strip
-    [[.2, 26, 55, .95, .92], [.85, 72, 55, 1.05, .95]], // follows the before/after line
+    [[.12, 10, 22, .78, .95], [.7, 9, 84, .78, .95], [.92, 40, 60, .9, 1]],     // down the offer rail
+    [[.12, 18, 60, .9, 1], [.88, 84, 58, .9, 1]],   // across the process strip
+    [[.2, 26, 55, .95, 1], [.85, 72, 55, 1.05, 1]], // follows the before/after line
     [[.5, 50, 62, 1.42, 1]]                             // warming the final call to action
   ];
   let anchors = [];
