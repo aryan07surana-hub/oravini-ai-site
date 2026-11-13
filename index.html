@@ -662,6 +662,28 @@ main{position:relative;z-index:2;overflow-x:clip}
 .hs-on .hs-pin{justify-content:flex-start;padding-top:clamp(92px,12vh,118px)}
 
 /* =====================================================================
+   GUARANTEE (preview): fluted-glass callout, locked palette, soft coral glow
+   paced like the CTA halo (3.2s ease-in-out); static soft glow under reduced motion
+   ===================================================================== */
+.guarantee{position:relative;isolation:isolate;justify-self:start;display:flex;align-items:center;gap:18px;max-width:600px;padding:20px 30px 20px 18px;border-radius:22px;
+  background:linear-gradient(160deg,rgba(255,255,255,.1),rgba(255,255,255,.03)),rgba(9,14,32,.55);border:1px solid rgba(255,144,113,.46);
+  -webkit-backdrop-filter:blur(20px) saturate(150%);backdrop-filter:blur(20px) saturate(150%);
+  box-shadow:0 0 22px -6px rgba(255,111,85,.45),0 24px 50px -30px rgba(3,7,20,.8),inset 0 1px 0 rgba(255,255,255,.14)}
+.guarantee::before{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:.3;mix-blend-mode:overlay;
+  background-image:repeating-linear-gradient(90deg,rgba(255,255,255,0) 0,rgba(255,255,255,.12) 3px,rgba(255,255,255,.03) 6px,rgba(0,0,20,.2) 10px,rgba(0,0,0,0) 13px)}
+.guarantee::after{content:'';position:absolute;inset:-4px;z-index:-1;border-radius:26px;pointer-events:none;
+  box-shadow:0 0 26px 3px rgba(255,111,85,.32),0 0 60px 12px rgba(255,111,85,.12);
+  opacity:.45;animation:gGlow 3.2s ease-in-out infinite}
+@keyframes gGlow{0%,100%{opacity:.45}50%{opacity:.9}}
+.g-mark{position:relative;flex:none;display:grid;place-items:center;width:54px;height:54px;border-radius:50%;background:rgba(255,111,85,.14);border:1px solid rgba(255,144,113,.5);box-shadow:0 0 18px -4px rgba(255,111,85,.5)}
+.g-mark .glyph{width:27px;height:27px}
+.guarantee .g-label{position:relative;margin:0 0 5px;font-size:.72rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--coral-2)}
+.guarantee .g-head{position:relative;margin:0;font-size:clamp(1.18rem,1.75vw,1.45rem);font-weight:400;line-height:1.3;letter-spacing:-.015em;color:var(--cream);text-wrap:balance}
+@media(max-width:480px){.guarantee{max-width:100%;padding:17px 20px 17px 15px;gap:14px;border-radius:20px}.guarantee::after{border-radius:24px}
+  .g-mark{width:46px;height:46px}.g-mark .glyph{width:23px;height:23px}.guarantee .g-head{font-size:1.14rem}}
+@media (prefers-reduced-motion:reduce){.guarantee::after{animation:none!important;opacity:.65}}
+
+/* =====================================================================
    GLOWING CTAs: soft, slowly pulsing coral halo on every Book a call / WhatsApp CTA
    ===================================================================== */
 :is(.nav-cta,.hero,.after-cta,.final) :is(a.btn,a.tlink):is([href*="calendly.com"],[href*="wa.me"]){isolation:isolate}
@@ -1030,6 +1052,7 @@ main{position:relative;z-index:2;overflow-x:clip}
         <a class="btn btn-coral magnetic" href="https://calendly.com/aryan07surana/30min" target="_blank" rel="noopener">Book a call<svg class="ico"><use href="#i-arrow"/></svg></a>
         <a class="tlink magnetic" href="https://wa.me/919823537205?text=Hey%2C%20I%20want%20to%20implement%20AI%20into%20my%20business" target="_blank" rel="noopener">WhatsApp us<svg class="ico"><use href="#i-arrow"/></svg></a>
       </div>
+      <aside class="guarantee" aria-label="Our guarantee"><span class="g-mark" aria-hidden="true"><svg class="glyph"><use href="#i-temple"/></svg></span><div><p class="g-label">Our guarantee</p><p class="g-head">If we don't perform, you don't pay us.</p></div></aside>
     </div>
 
     <div class="hero-side">
@@ -1445,6 +1468,7 @@ main{position:relative;z-index:2;overflow-x:clip}
         <a class="btn btn-coral magnetic" href="https://calendly.com/aryan07surana/30min" target="_blank" rel="noopener">Book a call<svg class="ico"><use href="#i-arrow"/></svg></a>
         <a class="tlink magnetic" href="https://wa.me/919823537205?text=Hey%2C%20I%20want%20to%20implement%20AI%20into%20my%20business" target="_blank" rel="noopener">WhatsApp us<svg class="ico"><use href="#i-arrow"/></svg></a>
       </div>
+      <aside class="guarantee fade" aria-label="Our guarantee"><span class="g-mark" aria-hidden="true"><svg class="glyph"><use href="#i-temple"/></svg></span><div><p class="g-label">Our guarantee</p><p class="g-head">If we don't perform, you don't pay us.</p></div></aside>
     </div>
     <aside class="glass agenda fade" id="agenda">
       <p class="label">On the call</p>
@@ -2327,8 +2351,11 @@ main{position:relative;z-index:2;overflow-x:clip}
     { id: 'own', chip: 'Do I own the system and my data?',
       keys: ['own', 'ownership', 'my data', 'data', 'lock in', 'locked in', 'own it', 'who owns', 'keep it'],
       a: '<p>That is the point of Step 3. With <b>custom software</b> it is yours outright: your data, your platform, an AI layer on top, including migrating your data off rented tools.</p><p>And because every tier sits on the same infrastructure, nothing you build along the way is thrown away.</p>' },
+    { id: 'guarantee', chip: 'Do you offer a guarantee?',
+      keys: ['guarantee', 'guaranteed', 'guarantees', 'risk free', 'risk-free', 'no risk', 'dont perform', 'do not perform'],
+      a: '<p><b>Our guarantee:</b> "If we don\'t perform, you don\'t pay us."</p><p>A person on our team can walk you through it for your business.</p>' },
     { id: 'results', chip: 'Do you have results or case studies?',
-      keys: ['results', 'guarantee', 'case study', 'case studies', 'proof', 'testimonials', 'examples', 'portfolio', 'roi', 'return', 'success', 'track record'],
+      keys: ['results', 'case study', 'case studies', 'proof', 'testimonials', 'examples', 'portfolio', 'roi', 'return', 'success', 'track record'],
       a: '<p>We do not publish numbers or client stories on this site. The honest answer comes from your own business: on a call we look at where it leaks and what a system would recover.</p>' },
     { id: 'human', chip: 'Can I talk to a person?',
       keys: ['contact', 'whatsapp', 'email', 'phone number', 'reach you', 'get in touch', 'human', 'person', 'real person', 'someone', 'speak to', 'talk to', 'book', 'booking', 'call', 'schedule'],
@@ -2386,7 +2413,7 @@ main{position:relative;z-index:2;overflow-x:clip}
   // (1) premade chips: the full set lives in the scrolling row under the conversation
   FAQ.filter(f => f.chip).forEach(f => chips.appendChild(chipBtn(f)));
   // the most-asked ones are laid out up front in the welcome message
-  const FRONT = ['what', 'who', 'industry', 'tiers', 'process', 'fast', 'start', 'call', 'price', 'ai', 'creators', 'own'];
+  const FRONT = ['what', 'who', 'industry', 'tiers', 'process', 'fast', 'start', 'call', 'price', 'guarantee', 'ai', 'creators', 'own'];
   function askChip(f) { add(f.chip, 'u'); botSay(withNudge(f.a)); }           // fixed answer, no guessing
   function ask(q) { q = q.trim(); if (!q) return; add(q, 'u'); botSay(answer(q)); }   // (2) keyword match, (3) fallback
 
